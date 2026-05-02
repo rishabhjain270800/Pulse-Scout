@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulse Scout | AI-Powered Ad Intelligence</title>
+    <meta name="description" content="Pulse Scout is a unified intelligence platform that shows you what your competitors are doing, how your brand is performing, and what actions you should take next.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Pulse Scout | AI-Powered Ad Intelligence">
+    <meta property="og:description" content="Unified intelligence platform for modern brands.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="index.css?v=1.1">
+</head>
+<body>\n    <div class="mouse-glow" id="mouse-glow"></div>
+    <div class="glow-bg"></div>
+    <div class="glow-bg glow-bg-2"></div>
+
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="ph-fill ph-pulse" aria-hidden="true"></i>
+                <span>Pulse Scout</span>
+            </div>
+            <nav class="nav-links">
+                <a href="#platform" class="nav-link">Platform</a>
+                <a href="#modules" class="nav-link">Modules</a>
+                <a href="#impact" class="nav-link">Impact</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="btn btn-secondary magnetic" aria-label="Log In">Log In</button>
+                <button class="btn btn-primary magnetic" aria-label="Get a Demo">Get a Demo</button>
+            </div>
+        </div>
+    </header>\n
+    <!-- LIVE SENTIMENT TICKER -->
+    <div class="sentiment-ticker-wrapper">
+        <div class="ticker-content">
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Apple: Positive Sentiment (+82)</span>
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Nike: Competitive Move Detected</span>
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Amazon: Search SOV Increase (+12%)</span>
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Tesla: Creative Score 94/100</span>
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Microsoft: New Banner Campaign Live</span>
+            <!-- Repeat for loop -->
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Apple: Positive Sentiment (+82)</span>
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Nike: Competitive Move Detected</span>
+            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Amazon: Search SOV Increase (+12%)</span>
+        </div>
+    </div>
+
+
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero" id="home">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <div class="badge">
+                        <span class="badge-dot"></span> Next-Gen Brand Monitoring
+                    </div>
+                    <h1 class="hero-title">
+                        Transform Raw Signals into <span class="text-gradient">Actionable Insights</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Pulse Scout is the AI-powered intelligence platform that reveals competitor strategies, measures brand performance, and uncovers your next big move across ads, search, and content.
+                    </p>
+                    <div class="hero-cta-group">
+                        <button class="btn btn-primary btn-lg magnetic" aria-label="Start Monitoring">Start Monitoring</button>
+                        <button class="btn btn-outline btn-lg magnetic" aria-label="See How It Works">
+                            <i class="ph ph-play-circle"></i> See How It Works
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <!-- Abstract UI Mockup representing the unified dashboard -->
+                    <div class="dashboard-mockup glass-panel">
+                        <div class="mockup-header">
+                            <div class="window-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <div class="mockup-title">Pulse Scout Dashboard</div>
+                        </div>
+                        <div class="mockup-body">
+                            <div class="mockup-sidebar">
+                                <div class="mockup-nav-item active"></div>
+                                <div class="mockup-nav-item"></div>
+                                <div class="mockup-nav-item"></div>
+                                <div class="mockup-nav-item"></div>
+                            </div>
+                            <div class="mockup-content">
+                                <div class="mockup-row">
+                                    <div class="mockup-card wide">
+                                        <div class="mockup-card-title">Share of Voice</div>
+                                        <div class="mockup-chart-bar"></div>
+                                        <div class="mockup-chart-bar partial"></div>
+                                    </div>
+                                </div>
+                                <div class="mockup-row two-col">
+                                    <div class="mockup-card">
+                                        <div class="mockup-card-title">Sentiment Trend</div>
+                                        <div class="mockup-chart-line"></div>
+                                    </div>
+                                    <div class="mockup-card">
+                                        <div class="mockup-card-title">Creative Score</div>
+                                        <div class="mockup-score">92</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CAPABILITIES STRIP -->
+        <section class="capabilities-strip">
+            <div class="container">
+                <p class="strip-title">Unified Intelligence Across Every Channel</p>
+                <div class="strip-logos">
+                    <span><i class="ph ph-desktop"></i> Display Ads</span>
+                    <span><i class="ph ph-magnifying-glass"></i> Search Ads</span>
+                    <span><i class="ph ph-article"></i> Content & Blogs</span>
+                    <span><i class="ph ph-share-network"></i> Social Listening</span>
+                    <span><i class="ph ph-paint-brush"></i> Creatives</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULES SHOWCASE -->
+        <section class="modules" id="modules">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>The Engines Powering Your Intelligence</h2>
+                    <p>Deep dive into specific digital channels with precision modules.</p>
+                </div>
+
+                <div class="modules-grid">
+                    <!-- Module 1 -->
+                    <div class="module-card glass-panel">
+                        <div class="module-icon" style="color: #3b82f6;">
+                            <i class="ph ph-browser"></i>
+                        </div>
+                        <h3>Display Intelligence</h3>
+                        <p>Track banner ads across publisher websites in real-time. Uncover Share of Voice (SOV), publisher dominance, and competitor presence.</p>
+                    </div>
+
+                    <!-- Module 2 -->
+                    <div class="module-card glass-panel">
+                        <div class="module-icon" style="color: #a855f7;">
+                            <i class="ph ph-magnifying-glass-plus"></i>
+                        </div>
+                        <h3>Search Intelligence</h3>
+                        <p>Track Paid + Organic search ads based on keywords. Monitor rankings, Impression Share, and region-based search simulations.</p>
+                    </div>
+
+                    <!-- Module 3 -->
+                    <div class="module-card glass-panel">
+                        <div class="module-icon" style="color: #10b981;">
+                            <i class="ph ph-chats-circle"></i>
+                        </div>
+                        <h3>Content & Sentiment</h3>
+                        <p>Analyze brand mentions across web content, news, and forums. Group by keywords and classify sentiment using advanced AI.</p>
+                    </div>
+
+                    <!-- Module 4 -->
+                    <div class="module-card glass-panel">
+                        <div class="module-icon" style="color: #ef4444;">
+                            <i class="ph ph-target"></i>
+                        </div>
+                        <h3>Creative Scoring</h3>
+                        <p>Evaluate ad creatives using AI. Score based on Awareness, Imagery, Headline, Brand Visibility, and Performance.</p>
+                    </div>
+
+                    <!-- Module 5 -->
+                    <div class="module-card glass-panel">
+                        <div class="module-icon" style="color: #f59e0b;">
+                            <i class="ph ph-users-three"></i>
+                        </div>
+                        <h3>Social Listening</h3>
+                        <p>Track brand conversations across social platforms. Understand sentiment trends, engagement metrics, and influencer insights.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLATFORM CAPABILITIES -->
+        <section class="platform" id="platform">
+            <div class="container platform-container">
+                <div class="platform-image">
+                    <div class="platform-glass glass-panel glow-border">
+                        <div class="feature-row">
+                            <div class="feature-icon"><i class="ph ph-robot"></i></div>
+                            <div class="feature-text">
+                                <h4>AI Sentiment Analysis</h4>
+                                <span>Scanning 10,000+ mentions... Positive trend detected.</span>
+                            </div>
+                            <div class="feature-status success">Active</div>
+                        </div>
+                        <div class="feature-row">
+                            <div class="feature-icon"><i class="ph ph-globe-hemisphere-west"></i></div>
+                            <div class="feature-text">
+                                <h4>Real-Time Crawling</h4>
+                                <span>Crawling competitor landing pages in North America...</span>
+                            </div>
+                            <div class="feature-status warning">Crawling</div>
+                        </div>
+                        <div class="feature-row">
+                            <div class="feature-icon"><i class="ph ph-chart-line-up"></i></div>
+                            <div class="feature-text">
+                                <h4>Keyword Clustering</h4>
+                                <span>Grouping search intent by 'Ad Intelligence'...</span>
+                            </div>
+                            <div class="feature-status success">Done</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="platform-content">
+                    <h2>Built for Scale, Powered by AI</h2>
+                    <p>Pulse Scout isn't just a scraper. It's a comprehensive intelligence engine designed for modern brand monitoring.</p>
+                    
+                    <ul class="feature-list">
+                        <li>
+                            <i class="ph-fill ph-check-circle"></i>
+                            <div>
+                                <strong>Real-Time Crawling Engine</strong>
+                                <p>Simulate searches, scrape content, and track ads based on specific time-slots and locations.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="ph-fill ph-check-circle"></i>
+                            <div>
+                                <strong>Advanced Data Intelligence</strong>
+                                <p>Leverage keyword clustering, sentiment analysis, and creative scoring driven by AI.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="ph-fill ph-check-circle"></i>
+                            <div>
+                                <strong>Comprehensive Reports</strong>
+                                <p>Export to Excel/PDF. Compare campaigns, analyze Impression Share, and benchmark competitors.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMPARISON MATRIX -->
+        <section class="comparison" id="comparison">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Pulse Scout vs. The Rest</h2>
+                    <p>Why brands choose the unified intelligence platform.</p>
+                </div>
+                <div class="comparison-table-wrapper glass-panel">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th class="highlight">Pulse Scout</th>
+                                <th>Point Solutions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Display Ad Tracking</td>
+                                <td class="highlight"><i class="ph-fill ph-check-circle"></i></td>
+                                <td><i class="ph-fill ph-check-circle"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Search SOV Analysis</td>
+                                <td class="highlight"><i class="ph-fill ph-check-circle"></i></td>
+                                <td><i class="ph-fill ph-check-circle"></i></td>
+                            </tr>
+                            <tr>
+                                <td>AI Creative Scoring</td>
+                                <td class="highlight"><i class="ph-fill ph-check-circle"></i></td>
+                                <td><i class="ph ph-x-circle"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Cross-Channel Sentiment</td>
+                                <td class="highlight"><i class="ph-fill ph-check-circle"></i></td>
+                                <td><i class="ph ph-x-circle"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Unified ROI Dashboard</td>
+                                <td class="highlight"><i class="ph-fill ph-check-circle"></i></td>
+                                <td><i class="ph ph-x-circle"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPACT (NUMBERS) -->
+        <section class="impact" id="impact">
+            <div class="container text-center">
+                <h2>The Business Impact</h2>
+                <p class="impact-subtitle">Insights that directly drive performance and ROI.</p>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card glass-panel">
+                        <div class="metric-number text-gradient" data-target="25">0</div>
+                        <div class="metric-label">% Media Efficiency<br>Improvement</div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="metric-number text-gradient" data-target="60">0</div>
+                        <div class="metric-label">% Faster Media<br>Planning</div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="metric-number text-gradient" data-target="30">0</div>
+                        <div class="metric-label">% Better Targeting<br>Accuracy</div>
+                    </div>
+                    <div class="metric-card glass-panel">
+                        <div class="metric-number text-gradient" data-target="12">0</div>
+                        <div class="metric-label">% Incremental<br>Sales Uplift</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ROI CALCULATOR -->
+        <section class="roi-calculator" id="roi">
+            <div class="container">
+                <div class="calculator-grid glass-panel">
+                    <div class="calc-input">
+                        <h2>Calculate Your Lift</h2>
+                        <p>See how much you can save with Pulse Scout intelligence.</p>
+                        <div class="input-group">
+                            <label for="ad-spend">Monthly Media Spend ($)</label>
+                            <input type="range" id="ad-spend" min="10000" max="1000000" step="10000" value="50000">
+                            <div class="spend-value">$<span id="spend-display">50,000</span></div>
+                        </div>
+                    </div>
+                    <div class="calc-results">
+                        <div class="result-card">
+                            <span class="result-label">Potential Efficiency Gain</span>
+                            <span class="result-value text-gradient">$<span id="savings-display">10,000</span></span>
+                            <span class="result-sub">Estimated Monthly ROI</span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-label">Media Planning Speed</span>
+                            <span class="result-value text-gradient">60%</span>
+                            <span class="result-sub">Faster Resource Allocation</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- CTA SECTION -->
+        <section class="bottom-cta">
+            <div class="container text-center">
+                <div class="cta-box glass-panel">
+                    <h2>Ready to outsmart the competition?</h2>
+                    <p>Join top brands using Pulse Scout to dominate their digital presence.</p>
+                    <button class="btn btn-primary btn-lg magnetic" aria-label="Start Monitoring">Get Started Now</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <div class="logo">
+                    <i class="ph-fill ph-pulse" aria-hidden="true"></i>
+                    <span>Pulse Scout</span>
+                </div>
+                <p>The unified intelligence platform for modern brands.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Modules</h4>
+                    <a href="#">Display Intelligence</a>
+                    <a href="#">Search Intelligence</a>
+                    <a href="#">Content & Sentiment</a>
+                    <a href="#">Creative Intelligence</a>
+                    <a href="#">Social Listening</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="#">Campaign Management</a>
+                    <a href="#">User Roles</a>
+                    <a href="#">Reports & Analytics</a>
+                    <a href="#">Brand Repo</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Refund Policy</a>
+                    <a href="#">Data Protection</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Pulse Scout (Adglobal360). All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js?v=1.1"></script>
+</body>
+</html>
