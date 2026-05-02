@@ -1559,3 +1559,69 @@ footer {
     }
     .roi-chart-wrap { height: 280px; }
 }
+
+/* ===== Client Logos Strip ===== */
+.client-logos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin: 3rem 0 2.5rem;
+}
+.client-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.9rem 1.8rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: all 0.3s;
+}
+.client-logo:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 15px rgba(247,148,29,0.15);
+    transform: translateY(-2px);
+}
+.client-logo i {
+    font-size: 1.3rem;
+    color: var(--primary);
+}
+
+/* ===== Industry Card Client Tag ===== */
+.card-client-tag {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 700;
+    color: var(--primary);
+    opacity: 0.85;
+    margin-bottom: 1rem;
+}
+.industry-card .card-story {
+    font-size: 1.05rem;
+    color: var(--text-main);
+    line-height: 1.75;
+    text-align: center;
+}
+.card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 2rem;
+}
+.metric-badge {
+    background: rgba(247,148,29,0.1);
+    color: var(--primary);
+    border: 1px solid rgba(247,148,29,0.25);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
