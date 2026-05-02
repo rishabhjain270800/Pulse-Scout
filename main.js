@@ -167,24 +167,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const aRoi = document.getElementById('a-roi');
     const pPeriod = document.getElementById('p-period');
 
+    function updateSliderFill(slider) {
+        const min = parseFloat(slider.min);
+        const max = parseFloat(slider.max);
+        const val = parseFloat(slider.value);
+        const pct = ((val - min) / (max - min)) * 100;
+        slider.style.background = `linear-gradient(to right, #F7941D 0%, #F7941D ${pct}%, #e5e7eb ${pct}%, #e5e7eb 100%)`;
+    }
+
     let roiChart;
     const roiChartCtx = document.getElementById('roiChart');
     if (roiChartCtx) {
         roiChart = new Chart(roiChartCtx, {
             type: 'bar',
             data: {
-                labels: ['Current Wasted', 'Pulse Scout Saving', 'Net ROI'],
+                labels: ['Wasted Spend', 'PS Savings', 'Net Gain'],
                 datasets: [{
-                    data: [10000, 12500, 10500],
-                    backgroundColor: ['rgba(239, 68, 68, 0.8)', 'rgba(16, 185, 129, 0.8)', 'rgba(59, 130, 246, 0.8)'], borderColor: ['#ef4444', '#10b981', '#3b82f6'], borderWidth: 1,
-                    borderRadius: 6
+                    data: [7500, 12500, 10500],
+                    backgroundColor: [
+                        'rgba(239, 68, 68, 0.85)',
+                        'rgba(16, 185, 129, 0.85)',
+                        'rgba(247, 148, 29, 0.85)'
+                    ],
+                    borderColor: ['#ef4444', '#10b981', '#F7941D'],
+                    borderWidth: 2,
+                    borderRadius: 10,
+                    borderSkipped: false
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true } }
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => ' $' + Math.round(ctx.raw).toLocaleString()
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            callback: (v) => '$' + (v >= 1000 ? (v/1000).toFixed(0) + 'K' : v)
+                        }
+                    },
+                    x: { grid: { display: false } }
+                }
             }
         });
     }
@@ -193,26 +224,37 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!spendSlider || !toolsSlider) return;
         const spend = parseInt(spendSlider.value);
         const tools = parseInt(toolsSlider.value);
+
+        // Update displays
         if (spendDisplay) spendDisplay.innerText = spend.toLocaleString();
         if (toolsDisplay) toolsDisplay.innerText = tools.toLocaleString();
 
-        const wasted = spend * 0.15;
-        const saving = spend * 0.25;
+        // Update slider fills
+        updateSliderFill(spendSlider);
+        updateSliderFill(toolsSlider);
+
+        // Compute
+        const wasted = Math.round(spend * 0.15);
+        const saving = Math.round(spend * 0.25);
         const net = saving - tools;
+        const paybackWeeks = tools > 0 ? Math.max(1, Math.ceil(tools / (saving / 4))) : 0;
 
         if (mSaving) mSaving.innerText = saving.toLocaleString();
-        if (aRoi) aRoi.innerText = (net * 12).toLocaleString();
-        if (pPeriod) pPeriod.innerText = Math.max(1, Math.ceil(tools / (saving / 4)));
+        if (aRoi) aRoi.innerText = (Math.max(0, net) * 12).toLocaleString();
+        if (pPeriod) pPeriod.innerText = paybackWeeks;
 
         if (roiChart) {
-            roiChart.data.datasets[0].data = [wasted, saving, net];
+            roiChart.data.datasets[0].data = [wasted, saving, Math.max(0, net)];
             roiChart.update();
         }
     }
 
     if (spendSlider) {
         spendSlider.addEventListener('input', updateROI);
-        toolsSlider.addEventListener('input', updateROI);
+        if (toolsSlider) toolsSlider.addEventListener('input', updateROI);
+        // Initialize fills and values
+        updateSliderFill(spendSlider);
+        if (toolsSlider) updateSliderFill(toolsSlider);
         updateROI();
     }
 

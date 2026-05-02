@@ -47,7 +47,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="index.css?v=1.2">
+    <link rel="stylesheet" href="index.css?v=1.3">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\n</head>
 <body>\n    <div class="scroll-progress" id="scrollProgress"></div>\n    <div class="mouse-glow" id="mouse-glow"></div>
     <div class="glow-bg"></div>
@@ -671,43 +671,57 @@
 
         
         <!-- ROI CALCULATOR -->
-        <section class="roi-calculator" id="roi">
+        <section class="roi-section" id="roi">
             <div class="container">
-                <div class="calculator-grid glass-panel">
-                    <div class="calc-input">
+                <div class="roi-wrapper">
+                    <!-- Left: Inputs -->
+                    <div class="roi-inputs">
                         <h2>Calculate Your Lift</h2>
-                        <p>See how much you can save with Pulse Scout intelligence.</p>
-                        <div class="input-group">
-                            <label for="ad-spend">Monthly Media Spend ($)</label>
-                            <input type="range" id="ad-spend" min="10000" max="500000" step="10000" value="50000">
-                            <div class="spend-value">$<span id="spend-display">50,000</span></div>
+                        <p class="roi-sub">Move the sliders to estimate your potential savings with Pulse Scout.</p>
+
+                        <div class="roi-slider-group">
+                            <div class="roi-slider-header">
+                                <label>Monthly Media Spend</label>
+                                <span class="roi-slider-val">$<span id="spend-display">50,000</span></span>
+                            </div>
+                            <input type="range" id="ad-spend" min="10000" max="500000" step="10000" value="50000" class="roi-slider">
+                            <div class="roi-slider-range"><span>$10K</span><span>$500K</span></div>
                         </div>
-                        <div class="input-group mt-3">
-                            <label for="tools-cost">Current Tools Cost ($)</label>
-                            <input type="range" id="tools-cost" min="0" max="20000" step="500" value="2000">
-                            <div class="spend-value">$<span id="tools-display">2,000</span></div>
+
+                        <div class="roi-slider-group">
+                            <div class="roi-slider-header">
+                                <label>Current Tool Stack Cost</label>
+                                <span class="roi-slider-val">$<span id="tools-display">2,000</span>/mo</span>
+                            </div>
+                            <input type="range" id="tools-cost" min="0" max="20000" step="500" value="2000" class="roi-slider">
+                            <div class="roi-slider-range"><span>$0</span><span>$20K</span></div>
                         </div>
+
+                        <div class="roi-metric-cards">
+                            <div class="roi-metric">
+                                <span class="roi-metric-label">Monthly Saving</span>
+                                <strong class="roi-metric-val">$<span id="m-saving">12,500</span></strong>
+                            </div>
+                            <div class="roi-metric">
+                                <span class="roi-metric-label">Annual ROI</span>
+                                <strong class="roi-metric-val">$<span id="a-roi">150,000</span></strong>
+                            </div>
+                            <div class="roi-metric">
+                                <span class="roi-metric-label">Payback Period</span>
+                                <strong class="roi-metric-val"><span id="p-period">4</span> wks</strong>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary roi-cta-btn" onclick="openModal()">Get My Full ROI Report →</button>
+                        <p class="roi-footnote">Based on avg 15–25% efficiency improvement across Pulse Scout clients</p>
                     </div>
-                    <div class="calc-chart">
-                        <canvas id="roiChart"></canvas>
-                        <div class="metric-cards mt-4">
-                            <div class="m-card">
-                                <strong>$<span id="m-saving">12,500</span></strong>
-                                <span>Monthly Saving</span>
-                            </div>
-                            <div class="m-card">
-                                <strong>$<span id="a-roi">150,000</span></strong>
-                                <span>Annual ROI</span>
-                            </div>
-                            <div class="m-card">
-                                <strong><span id="p-period">4</span> Weeks</strong>
-                                <span>Payback Period</span>
-                            </div>
+
+                    <!-- Right: Chart -->
+                    <div class="roi-chart-area">
+                        <p class="roi-chart-label">Your savings breakdown</p>
+                        <div class="roi-chart-wrap">
+                            <canvas id="roiChart"></canvas>
                         </div>
-                        <div class="text-center mt-3">
-                            <button class="btn btn-primary" onclick="openModal()">Get my full ROI report</button>
-                        </div>
-                        <p class="footnote text-center mt-2">Based on avg 15–25% media efficiency improvement across Pulse Scout clients</p>
                     </div>
                 </div>
             </div>
@@ -835,6 +849,6 @@
         </div>
     </footer>
 
-    <script src="main.js?v=1.2"></script>
+    <script src="main.js?v=1.3"></script>
     <button id="backToTop" class="back-to-top"><i class="ph ph-arrow-up"></i></button>\n</body>
 </html>

@@ -1399,3 +1399,163 @@ footer {
     .calculator-grid { grid-template-columns: 1fr; padding: 2rem; gap: 3rem; }
     .metric-cards { grid-template-columns: 1fr; }
 }
+
+/* ===== ROI CALCULATOR - Clean Rebuild ===== */
+.roi-section {
+    padding: 8rem 0;
+    background: #f8f9fb;
+}
+.roi-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+    background: white;
+    border-radius: 24px;
+    padding: 4rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+    border: 1px solid #e5e7eb;
+}
+.roi-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+.roi-inputs h2 {
+    font-size: 2rem;
+    color: var(--text-main);
+    margin: 0;
+}
+.roi-sub {
+    color: var(--text-muted);
+    margin: -1rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+.roi-slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+.roi-slider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.roi-slider-header label {
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+.roi-slider-val {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+.roi-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 10px;
+    background: linear-gradient(to right, var(--primary) 0%, var(--primary) 10%, #e5e7eb 10%, #e5e7eb 100%);
+    outline: none;
+    cursor: pointer;
+    border: none;
+}
+.roi-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    background: white;
+    border: 3px solid var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(247,148,29,0.35);
+    transition: transform 0.15s;
+}
+.roi-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.roi-slider-range {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+.roi-metric-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+.roi-metric {
+    background: #fff7ed;
+    border: 1px solid rgba(247,148,29,0.2);
+    border-radius: 14px;
+    padding: 1.2rem 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+.roi-metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+.roi-metric-val {
+    font-size: 1.3rem;
+    color: var(--primary);
+    font-weight: 800;
+}
+.roi-cta-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+}
+.roi-footnote {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    margin: -1rem 0 0;
+}
+
+/* Chart area */
+.roi-chart-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.roi-chart-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin: 0;
+}
+.roi-chart-wrap {
+    position: relative;
+    height: 380px;
+    background: #fafafa;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #e5e7eb;
+}
+.roi-chart-wrap canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+@media (max-width: 968px) {
+    .roi-wrapper {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+        gap: 3rem;
+    }
+    .roi-metric-cards {
+        grid-template-columns: 1fr;
+    }
+    .roi-chart-wrap { height: 280px; }
+}
