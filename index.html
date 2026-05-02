@@ -3,8 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pulse Scout | AI-Powered Ad Intelligence</title>
-    <meta name="description" content="Pulse Scout is a unified intelligence platform that shows you what your competitors are doing, how your brand is performing, and what actions you should take next.">
+    
+    <title>Pulse Scout | AI-Powered Ad Intelligence & Brand Monitoring Platform</title>
+    <meta name="description" content="Track competitor ads, monitor brand sentiment, score creatives, and measure Share of Voice — all in one unified platform. Powered by Adglobal360.">
+    <meta name="keywords" content="Display ad intelligence, brand monitoring, share of voice, competitive intelligence India, AI ad tracking, search SOV, sentiment analysis">
+    <link rel="canonical" href="https://rishabhjain270800.github.io/Pulse-Scout/">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Pulse Scout | AI-Powered Ad Intelligence & Brand Monitoring Platform">
+    <meta property="og:description" content="Track competitor ads, monitor brand sentiment, score creatives, and measure Share of Voice.">
+    <meta property="og:image" content="https://rishabhjain270800.github.io/Pulse-Scout/og-image.jpg">
+    <meta property="og:url" content="https://rishabhjain270800.github.io/Pulse-Scout/">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Pulse Scout | AI-Powered Ad Intelligence">
+    <meta name="twitter:description" content="Unified intelligence platform for modern brands.">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Pulse Scout",
+      "description": "AI-Powered Ad Intelligence & Brand Monitoring Platform",
+      "applicationCategory": "BusinessApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      }
+    }
+    </script>
+
+    
     <!-- Open Graph -->
     <meta property="og:title" content="Pulse Scout | AI-Powered Ad Intelligence">
     <meta property="og:description" content="Unified intelligence platform for modern brands.">
@@ -15,11 +49,12 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="index.css?v=1.2">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\n</head>
-<body>\n    <div class="mouse-glow" id="mouse-glow"></div>
+<body>\n    <div class="scroll-progress" id="scrollProgress"></div>\n    <div class="mouse-glow" id="mouse-glow"></div>
     <div class="glow-bg"></div>
     <div class="glow-bg glow-bg-2"></div>
 
-    <header class="navbar">
+    
+    <header class="navbar" id="navbar">
         <div class="nav-container">
             <div class="logo">
                 <i class="ph-fill ph-pulse" aria-hidden="true"></i>
@@ -29,27 +64,38 @@
                 <a href="#platform" class="nav-link">Platform</a>
                 <a href="#modules" class="nav-link">Modules</a>
                 <a href="#impact" class="nav-link">Impact</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
             </nav>
             <div class="nav-actions">
-                <button class="btn btn-secondary magnetic" aria-label="Log In">Log In</button>
-                <button class="btn btn-primary magnetic" aria-label="Get a Demo">Get a Demo</button>
+                <button class="btn btn-secondary magnetic hide-mobile">Log In</button>
+                <button class="btn btn-primary magnetic pulse-btn">Get a Demo</button>
+                <button class="mobile-menu-toggle" id="menuToggle"><i class="ph ph-list"></i></button>
             </div>
         </div>
-    </header>\n
-    <!-- LIVE SENTIMENT TICKER -->
+        <div class="mobile-nav" id="mobileNav">
+            <a href="#platform">Platform</a>
+            <a href="#modules">Modules</a>
+            <a href="#impact">Impact</a>
+            <a href="#pricing">Pricing</a>
+        </div>
+    </header>
+\n
+    
+    <!-- LIVE SIGNAL TICKER -->
     <div class="sentiment-ticker-wrapper">
         <div class="ticker-content">
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Apple: Positive Sentiment (+82)</span>
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Nike: Competitive Move Detected</span>
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Amazon: Search SOV Increase (+12%)</span>
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Tesla: Creative Score 94/100</span>
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Microsoft: New Banner Campaign Live</span>
-            <!-- Repeat for loop -->
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Apple: Positive Sentiment (+82)</span>
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Nike: Competitive Move Detected</span>
-            <span class="ticker-item"><i class="ph-fill ph-chat-circle-dots"></i> Amazon: Search SOV Increase (+12%)</span>
+            <span class="ticker-item"><span class="dot orange"></span> Maruti Suzuki: 3 new display creatives detected on CarWale.com</span>
+            <span class="ticker-item"><span class="dot blue"></span> Flipkart: Search SOV increased +14% on 'mobile under 20000' — 2 hrs ago</span>
+            <span class="ticker-item"><span class="dot red"></span> Zomato: Negative sentiment spike on Twitter — 847 mentions in last hour</span>
+            <span class="ticker-item"><span class="dot orange"></span> HDFC Bank: Competitor launched new loan campaign on 8 publisher sites</span>
+            <span class="ticker-item"><span class="dot red"></span> Airtel: Creative Score dropped to 71 — headline clarity flagged by AI</span>
+            <span class="ticker-item"><span class="dot teal"></span> Myntra: Share of Voice at 34% in Fashion category — highest this week</span>
+            <span class="ticker-item"><span class="dot blue"></span> Tata Motors: Organic rank improved from #5 to #2 for 'electric cars India'</span>
+            <!-- Loop -->
+            <span class="ticker-item"><span class="dot orange"></span> Maruti Suzuki: 3 new display creatives detected</span>
         </div>
     </div>
+
 
 
     <main>
@@ -631,7 +677,58 @@
         </div>
 
         
-        <!-- CTA SECTION -->
+        
+        <!-- PRICING -->
+        <section class="pricing" id="pricing">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2>Simple, transparent plans</h2>
+                </div>
+                <div class="pricing-grid">
+                    <div class="pricing-card glass-panel">
+                        <h3>Starter</h3>
+                        <div class="price">Contact for pricing</div>
+                        <p>For brands getting started with ad intelligence</p>
+                        <ul>
+                            <li><i class="ph ph-check"></i> Up to 3 campaigns</li>
+                            <li><i class="ph ph-check"></i> Display + Search modules</li>
+                            <li><i class="ph ph-check"></i> Weekly reports (PDF/Excel)</li>
+                            <li><i class="ph ph-check"></i> 1 user seat</li>
+                            <li><i class="ph ph-check"></i> Email support</li>
+                        </ul>
+                        <button class="btn btn-outline w-100 mt-4">Start Free Trial</button>
+                    </div>
+                    <div class="pricing-card glass-panel popular">
+                        <div class="popular-badge">Most Popular</div>
+                        <h3>Growth</h3>
+                        <div class="price">Contact for pricing</div>
+                        <p>For active brands and agencies</p>
+                        <ul>
+                            <li><i class="ph ph-check"></i> Up to 15 campaigns</li>
+                            <li><i class="ph ph-check"></i> All 5 modules</li>
+                            <li><i class="ph ph-check"></i> Creative Scoring</li>
+                            <li><i class="ph ph-check"></i> Daily reports + Alerts</li>
+                            <li><i class="ph ph-check"></i> 5 user seats</li>
+                        </ul>
+                        <button class="btn btn-primary w-100 mt-4">Get a Demo</button>
+                    </div>
+                    <div class="pricing-card glass-panel">
+                        <h3>Enterprise</h3>
+                        <div class="price">Contact for pricing</div>
+                        <p>For large brands needing full intelligence</p>
+                        <ul>
+                            <li><i class="ph ph-check"></i> Unlimited campaigns</li>
+                            <li><i class="ph ph-check"></i> Custom crawl frequency</li>
+                            <li><i class="ph ph-check"></i> Dedicated account manager</li>
+                            <li><i class="ph ph-check"></i> API access</li>
+                            <li><i class="ph ph-check"></i> Custom integrations</li>
+                        </ul>
+                        <button class="btn btn-outline w-100 mt-4">Contact Sales</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+\n\n        <!-- CTA SECTION -->
         <section class="bottom-cta">
             <div class="container text-center">
                 <div class="cta-box glass-panel">
@@ -685,5 +782,5 @@
     </footer>
 
     <script src="main.js?v=1.2"></script>
-</body>
+    <button id="backToTop" class="back-to-top"><i class="ph ph-arrow-up"></i></button>\n</body>
 </html>
