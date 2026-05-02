@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: ['Current Wasted', 'Pulse Scout Saving', 'Net ROI'],
                 datasets: [{
                     data: [10000, 12500, 10500],
-                    backgroundColor: ['#ef4444', '#10b981', '#3b82f6'],
+                    backgroundColor: ['rgba(239, 68, 68, 0.8)', 'rgba(16, 185, 129, 0.8)', 'rgba(59, 130, 246, 0.8)'], borderColor: ['#ef4444', '#10b981', '#3b82f6'], borderWidth: 1,
                     borderRadius: 6
                 }]
             },
