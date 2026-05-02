@@ -53,13 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
             industryTabs.forEach(t => t.classList.remove('active'));
             industryCards.forEach(c => c.classList.remove('active'));
             tab.classList.add('active');
-            document.getElementById(`${target}-card`).classList.add('active');
+            const targetCard = document.getElementById(`${target}-card`);
+            if (targetCard) targetCard.classList.add('active');
         });
     });
 
     // 4. Hero Charts Initialization
-    if (document.getElementById('heroSovChart')) {
-        new Chart(document.getElementById('heroSovChart'), {
+    const heroSovCtx = document.getElementById('heroSovChart');
+    if (heroSovCtx) {
+        new Chart(heroSovCtx, {
             type: 'doughnut',
             data: {
                 labels: ['Brand A', 'Brand B', 'Brand C', 'Brand D', 'Others'],
@@ -78,8 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (document.getElementById('heroSentimentChart')) {
-        new Chart(document.getElementById('heroSentimentChart'), {
+    const heroSentCtx = document.getElementById('heroSentimentChart');
+    if (heroSentCtx) {
+        new Chart(heroSentCtx, {
             type: 'line',
             data: {
                 labels: Array.from({length: 14}, (_, i) => i + 1),
@@ -105,15 +108,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const interval = setInterval(() => {
             count++;
             scoreVal.innerText = count;
-            document.getElementById('scoreCircle').style.background = `conic-gradient(${primaryColor} ${count}%, rgba(0,0,0,0.05) 0%)`;
+            const circle = document.getElementById('scoreCircle');
+            if (circle) circle.style.background = `conic-gradient(${primaryColor} ${count}%, rgba(0,0,0,0.05) 0%)`;
             if (count >= 92) clearInterval(interval);
         }, 15);
     }
 
     // 5. Live Action SOV Chart
     let liveChart;
-    if (document.getElementById('liveSovChart')) {
-        const ctx = document.getElementById('liveSovChart').getContext('2d');
+    const liveSovCtx = document.getElementById('liveSovChart');
+    if (liveSovCtx) {
+        const ctx = liveSovCtx.getContext('2d');
         liveChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -143,12 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return Math.max(5, Math.min(45, val + change));
             });
             liveChart.update();
-            document.getElementById('time-ago').innerText = '0';
+            const timeAgo = document.getElementById('time-ago');
+            if (timeAgo) timeAgo.innerText = '0';
         }, 3000);
 
         setInterval(() => {
             const span = document.getElementById('time-ago');
-            span.innerText = parseInt(span.innerText) + 1;
+            if (span) span.innerText = parseInt(span.innerText) + 1;
         }, 1000);
     }
 
@@ -162,8 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const pPeriod = document.getElementById('p-period');
 
     let roiChart;
-    if (document.getElementById('roiChart')) {
-        roiChart = new Chart(document.getElementById('roiChart'), {
+    const roiChartCtx = document.getElementById('roiChart');
+    if (roiChartCtx) {
+        roiChart = new Chart(roiChartCtx, {
             type: 'bar',
             data: {
                 labels: ['Current Wasted', 'Pulse Scout Saving', 'Net ROI'],
@@ -183,18 +190,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateROI() {
+        if (!spendSlider || !toolsSlider) return;
         const spend = parseInt(spendSlider.value);
         const tools = parseInt(toolsSlider.value);
-        spendDisplay.innerText = spend.toLocaleString();
-        toolsDisplay.innerText = tools.toLocaleString();
+        if (spendDisplay) spendDisplay.innerText = spend.toLocaleString();
+        if (toolsDisplay) toolsDisplay.innerText = tools.toLocaleString();
 
         const wasted = spend * 0.15;
         const saving = spend * 0.25;
         const net = saving - tools;
 
-        mSaving.innerText = saving.toLocaleString();
-        aRoi.innerText = (net * 12).toLocaleString();
-        pPeriod.innerText = Math.max(1, Math.ceil(tools / (saving / 4)));
+        if (mSaving) mSaving.innerText = saving.toLocaleString();
+        if (aRoi) aRoi.innerText = (net * 12).toLocaleString();
+        if (pPeriod) pPeriod.innerText = Math.max(1, Math.ceil(tools / (saving / 4)));
 
         if (roiChart) {
             roiChart.data.datasets[0].data = [wasted, saving, net];
@@ -208,9 +216,59 @@ document.addEventListener('DOMContentLoaded', () => {
         updateROI();
     }
 
-    // 7. Module Previews Initialization
-    if (document.getElementById('displayPreviewChart')) {
-        new Chart(document.getElementById('displayPreviewChart'), {
+    // 7. Interactive Capabilities Strip Logic
+    const stripTabs = document.querySelectorAll('.strip-tab');
+    const stripPreviews = document.querySelectorAll('.strip-preview');
+    stripTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-tab');
+            stripTabs.forEach(t => t.classList.remove('active'));
+            stripPreviews.forEach(p => p.classList.remove('active'));
+            tab.classList.add('active');
+            const targetPreview = document.getElementById(`${target}-preview`);
+            if (targetPreview) targetPreview.classList.add('active');
+        });
+    });
+
+    // Strip Previews Charts
+    const stripDisplayCtx = document.getElementById('stripDisplayChart');
+    if (stripDisplayCtx) {
+        new Chart(stripDisplayCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Brand A', 'Brand B', 'Brand C', 'Others'],
+                datasets: [{ data: [45, 25, 20, 10], backgroundColor: primaryColor }]
+            },
+            options: { indexAxis: 'y', plugins: { legend: { display: false } } }
+        });
+    }
+    const stripContentCtx = document.getElementById('stripContentChart');
+    if (stripContentCtx) {
+        new Chart(stripContentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pos', 'Neu', 'Neg'],
+                datasets: [{ data: [68, 17, 15], backgroundColor: ['#10b981', '#9ca3af', '#ef4444'] }]
+            },
+            options: { maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right' } } }
+        });
+    }
+    const stripCreativeCtx = document.getElementById('stripCreativeChart');
+    if (stripCreativeCtx) {
+        new Chart(stripCreativeCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Awareness', 'Headline', 'Brand', 'CTA', 'Perf'],
+                datasets: [{ data: [88, 94, 91, 89, 92], backgroundColor: primaryColor }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
+        });
+    }
+
+    // 8. Module Previews Initialization
+    const displayPrevCtx = document.getElementById('displayPreviewChart');
+    if (displayPrevCtx) {
+        new Chart(displayPrevCtx, {
             type: 'bar',
             data: {
                 labels: ['P1', 'P2', 'P3', 'P4', 'P5'],
@@ -219,8 +277,9 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
         });
     }
-    if (document.getElementById('sentimentPreviewChart')) {
-        new Chart(document.getElementById('sentimentPreviewChart'), {
+    const sentimentPrevCtx = document.getElementById('sentimentPreviewChart');
+    if (sentimentPrevCtx) {
+        new Chart(sentimentPrevCtx, {
             type: 'doughnut',
             data: {
                 labels: ['Pos', 'Neu', 'Neg'],
@@ -229,8 +288,9 @@ document.addEventListener('DOMContentLoaded', () => {
             options: { plugins: { legend: { display: false } }, cutout: '60%' }
         });
     }
-    if (document.getElementById('creativePreviewChart')) {
-        new Chart(document.getElementById('creativePreviewChart'), {
+    const creativePrevCtx = document.getElementById('creativePreviewChart');
+    if (creativePrevCtx) {
+        new Chart(creativePrevCtx, {
             type: 'radar',
             data: {
                 labels: ['AW', 'HL', 'BR', 'CTA', 'PF'],
@@ -240,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 8. Mouse Glow & Global Effects (Restore from before)
+    // 9. Mouse Glow & Global Effects
     const mouseGlow = document.getElementById('mouse-glow');
     if (mouseGlow) {
         window.addEventListener('mousemove', (e) => {
@@ -251,54 +311,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Modal Logic (Global)
-function openModal() { document.getElementById('roiModal').style.display = 'block'; }
-function closeModal() { document.getElementById('roiModal').style.display = 'none'; }
+function openModal() { 
+    const modal = document.getElementById('roiModal');
+    if (modal) modal.style.display = 'block'; 
+}
+function closeModal() { 
+    const modal = document.getElementById('roiModal');
+    if (modal) modal.style.display = 'none'; 
+}
 window.onclick = function(event) {
     const modal = document.getElementById('roiModal');
     if (event.target == modal) closeModal();
 }
-
-    // 9. Interactive Capabilities Strip Logic
-    const stripTabs = document.querySelectorAll('.strip-tab');
-    const stripPreviews = document.querySelectorAll('.strip-preview');
-    stripTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = tab.getAttribute('data-tab');
-            stripTabs.forEach(t => t.classList.remove('active'));
-            stripPreviews.forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById(${target}-preview).classList.add('active');
-        });
-    });
-
-    // Strip Previews Charts
-    if (document.getElementById('stripDisplayChart')) {
-        new Chart(document.getElementById('stripDisplayChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Brand A', 'Brand B', 'Brand C', 'Others'],
-                datasets: [{ data: [45, 25, 20, 10], backgroundColor: '#F7941D' }]
-            },
-            options: { indexAxis: 'y', plugins: { legend: { display: false } } }
-        });
-    }
-    if (document.getElementById('stripContentChart')) {
-        new Chart(document.getElementById('stripContentChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Pos', 'Neu', 'Neg'],
-                datasets: [{ data: [68, 17, 15], backgroundColor: ['#10b981', '#9ca3af', '#ef4444'] }]
-            },
-            options: { maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right' } } }
-        });
-    }
-    if (document.getElementById('stripCreativeChart')) {
-        new Chart(document.getElementById('stripCreativeChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Awareness', 'Headline', 'Brand', 'CTA', 'Perf'],
-                datasets: [{ data: [88, 94, 91, 89, 92], backgroundColor: '#F7941D' }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
-        });
-    }
