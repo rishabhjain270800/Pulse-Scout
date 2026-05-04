@@ -1,8 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const primaryColor = '#F7941D';
-    const darkBg = '#0d0d1a';
+    const primaryColor = '#FF6B00';
+    const accentColor = '#FF8533';
+    const darkBg = '#0A0A0B';
+    const textColor = '#FFFFFF';
+    const mutedColor = '#A0A0A0';
 
-    // 1. IntersectionObserver for Impact Stats
+    // Set Chart.js defaults for dark mode
+    if (typeof Chart !== 'undefined') {
+        Chart.defaults.color = mutedColor;
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+    }
+
+    // 1. Scroll Reveal Logic
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('reveal');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('section').forEach(section => {
+        revealObserver.observe(section);
+    });
+
+    // 2. Impact Counters
     const stats = document.querySelectorAll('.metric-number');
     const statsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -30,44 +54,54 @@ document.addEventListener('DOMContentLoaded', () => {
         window.requestAnimationFrame(step);
     }
 
-    // 2. How it Works Step Animation
-    const steps = document.querySelectorAll('.step-card');
-    const stepsObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.classList.add('animate');
-                }, index * 150);
-                stepsObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.3 });
-    steps.forEach(step => stepsObserver.observe(step));
-
-    // 3. Industry Tab Switching
-    const industryTabs = document.querySelectorAll('.industry-tab');
-    const industryCards = document.querySelectorAll('.industry-card');
-    industryTabs.forEach(tab => {
+    // 3. Demo Tab Switching
+    const demoTabs = document.querySelectorAll('.demo-tab');
+    const demoContents = document.querySelectorAll('.demo-content');
+    demoTabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            const target = tab.getAttribute('data-industry');
-            industryTabs.forEach(t => t.classList.remove('active'));
-            industryCards.forEach(c => c.classList.remove('active'));
+            const target = tab.getAttribute('data-tab');
+            demoTabs.forEach(t => t.classList.remove('active'));
+            demoContents.forEach(c => c.classList.remove('active'));
             tab.classList.add('active');
-            const targetCard = document.getElementById(`${target}-card`);
-            if (targetCard) targetCard.classList.add('active');
+            const targetContent = document.getElementById(`${target}-demo`);
+            if (targetContent) targetContent.classList.add('active');
+            
+            // Re-init charts if needed
+            if (target === 'search') initSearchChart();
+            if (target === 'content') initContentChart();
         });
     });
 
-    // 4. Hero Charts Initialization
+    // 4. Repo Search Simulation
+    const repoInput = document.querySelector('.repo-search-bar input');
+    const repoBtn = document.querySelector('.repo-search-bar button');
+    const repoItems = document.querySelectorAll('.repo-item');
+
+    if (repoBtn && repoInput) {
+        repoBtn.addEventListener('click', () => {
+            const query = repoInput.value.toLowerCase();
+            repoItems.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    item.style.display = 'block';
+                    item.style.animation = 'fadeIn 0.5s ease';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // 5. Hero Charts
     const heroSovCtx = document.getElementById('heroSovChart');
     if (heroSovCtx) {
         new Chart(heroSovCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Brand A', 'Brand B', 'Brand C', 'Brand D', 'Others'],
+                labels: ['Brand A', 'Brand B', 'Brand C', 'Others'],
                 datasets: [{
-                    data: [34, 22, 18, 15, 11],
-                    backgroundColor: [primaryColor, '#ffb347', '#ffcc80', '#e0e0e0', '#9ca3af'],
+                    data: [42, 28, 18, 12],
+                    backgroundColor: [primaryColor, '#FF8533', '#FFA366', '#333'],
                     borderWidth: 0
                 }]
             },
@@ -75,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 responsive: true, 
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
-                cutout: '70%'
+                cutout: '75%'
             }
         });
     }
@@ -87,9 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: Array.from({length: 14}, (_, i) => i + 1),
                 datasets: [
-                    { label: 'Positive', data: [65, 72, 68, 80, 85, 78, 90, 88, 92, 95, 90, 88, 94, 92], borderColor: '#3b82f6', tension: 0.4, pointRadius: 0 },
-                    { label: 'Neutral', data: [20, 18, 22, 15, 10, 15, 8, 10, 5, 4, 8, 10, 5, 6], borderColor: '#9ca3af', tension: 0.4, pointRadius: 0 },
-                    { label: 'Negative', data: [15, 10, 10, 5, 5, 7, 2, 2, 3, 1, 2, 2, 1, 2], borderColor: '#ef4444', tension: 0.4, pointRadius: 0 }
+                    { label: 'Positive', data: [65, 72, 68, 80, 85, 78, 90, 88, 92, 95, 90, 88, 94, 92], borderColor: '#3b82f6', tension: 0.4, pointRadius: 0, fill: false },
+                    { label: 'Negative', data: [15, 10, 10, 5, 5, 7, 2, 2, 3, 1, 2, 2, 1, 2], borderColor: '#ef4444', tension: 0.4, pointRadius: 0, fill: false }
                 ]
             },
             options: {
@@ -109,240 +142,58 @@ document.addEventListener('DOMContentLoaded', () => {
             count++;
             scoreVal.innerText = count;
             const circle = document.getElementById('scoreCircle');
-            if (circle) circle.style.background = `conic-gradient(${primaryColor} ${count}%, rgba(0,0,0,0.05) 0%)`;
+            if (circle) circle.style.background = `conic-gradient(${primaryColor} ${count}%, rgba(255,255,255,0.05) 0%)`;
             if (count >= 92) clearInterval(interval);
         }, 15);
     }
+    const kwChartCtx = document.getElementById('keywordDeepChart');
+    if (kwChartCtx) {
+        new Chart(kwChartCtx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Keyword Rank',
+                    data: [12, 8, 5, 3, 2, 1],
+                    borderColor: primaryColor,
+                    backgroundColor: 'rgba(255, 107, 0, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { reverse: true, min: 1, max: 15 }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
 
-    // 5. Live Action SOV Chart
-    let liveChart;
-    const liveSovCtx = document.getElementById('liveSovChart');
-    if (liveSovCtx) {
-        const ctx = liveSovCtx.getContext('2d');
-        liveChart = new Chart(ctx, {
+    const compChartCtx = document.getElementById('compDeepChart');
+    if (compChartCtx) {
+        new Chart(compChartCtx, {
             type: 'bar',
             data: {
-                labels: ['HDFC', 'Maruti', 'Flipkart', 'Zomato', 'Airtel'],
+                labels: ['Display', 'Search', 'Social', 'News'],
                 datasets: [{
-                    label: 'SOV %',
-                    data: [32, 28, 25, 20, 15],
-                    backgroundColor: [primaryColor, '#555', '#555', '#555', '#555'],
+                    label: 'Share of Voice',
+                    data: [65, 42, 58, 35],
+                    backgroundColor: primaryColor,
                     borderRadius: 8
                 }]
             },
             options: {
-                indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: '#fff' }, max: 50 },
-                    y: { grid: { display: false }, ticks: { color: '#fff' } }
-                }
-            }
-        });
-
-        setInterval(() => {
-            liveChart.data.datasets[0].data = liveChart.data.datasets[0].data.map(val => {
-                const change = (Math.random() * 6 - 3); // -3% to +3%
-                return Math.max(5, Math.min(45, val + change));
-            });
-            liveChart.update();
-            const timeAgo = document.getElementById('time-ago');
-            if (timeAgo) timeAgo.innerText = '0';
-        }, 3000);
-
-        setInterval(() => {
-            const span = document.getElementById('time-ago');
-            if (span) span.innerText = parseInt(span.innerText) + 1;
-        }, 1000);
-    }
-
-    // 6. ROI Calculator v2
-    const spendSlider = document.getElementById('ad-spend');
-    const toolsSlider = document.getElementById('tools-cost');
-    const spendDisplay = document.getElementById('spend-display');
-    const toolsDisplay = document.getElementById('tools-display');
-    const mSaving = document.getElementById('m-saving');
-    const aRoi = document.getElementById('a-roi');
-    const pPeriod = document.getElementById('p-period');
-
-    function updateSliderFill(slider) {
-        const min = parseFloat(slider.min);
-        const max = parseFloat(slider.max);
-        const val = parseFloat(slider.value);
-        const pct = ((val - min) / (max - min)) * 100;
-        slider.style.background = `linear-gradient(to right, #F7941D 0%, #F7941D ${pct}%, #e5e7eb ${pct}%, #e5e7eb 100%)`;
-    }
-
-    let roiChart;
-    const roiChartCtx = document.getElementById('roiChart');
-    if (roiChartCtx) {
-        roiChart = new Chart(roiChartCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Wasted Spend', 'PS Savings', 'Net Gain'],
-                datasets: [{
-                    data: [7500, 12500, 10500],
-                    backgroundColor: [
-                        'rgba(239, 68, 68, 0.85)',
-                        'rgba(16, 185, 129, 0.85)',
-                        'rgba(247, 148, 29, 0.85)'
-                    ],
-                    borderColor: ['#ef4444', '#10b981', '#F7941D'],
-                    borderWidth: 2,
-                    borderRadius: 10,
-                    borderSkipped: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => ' $' + Math.round(ctx.raw).toLocaleString()
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        ticks: {
-                            callback: (v) => '$' + (v >= 1000 ? (v/1000).toFixed(0) + 'K' : v)
-                        }
-                    },
-                    x: { grid: { display: false } }
-                }
+                plugins: { legend: { display: false } }
             }
         });
     }
 
-    function updateROI() {
-        if (!spendSlider || !toolsSlider) return;
-        const spend = parseInt(spendSlider.value);
-        const tools = parseInt(toolsSlider.value);
-
-        // Update displays
-        if (spendDisplay) spendDisplay.innerText = spend.toLocaleString();
-        if (toolsDisplay) toolsDisplay.innerText = tools.toLocaleString();
-
-        // Update slider fills
-        updateSliderFill(spendSlider);
-        updateSliderFill(toolsSlider);
-
-        // Compute
-        const wasted = Math.round(spend * 0.15);
-        const saving = Math.round(spend * 0.25);
-        const net = saving - tools;
-        const paybackWeeks = tools > 0 ? Math.max(1, Math.ceil(tools / (saving / 4))) : 0;
-
-        if (mSaving) mSaving.innerText = saving.toLocaleString();
-        if (aRoi) aRoi.innerText = (Math.max(0, net) * 12).toLocaleString();
-        if (pPeriod) pPeriod.innerText = paybackWeeks;
-
-        if (roiChart) {
-            roiChart.data.datasets[0].data = [wasted, saving, Math.max(0, net)];
-            roiChart.update();
-        }
-    }
-
-    if (spendSlider) {
-        spendSlider.addEventListener('input', updateROI);
-        if (toolsSlider) toolsSlider.addEventListener('input', updateROI);
-        // Initialize fills and values
-        updateSliderFill(spendSlider);
-        if (toolsSlider) updateSliderFill(toolsSlider);
-        updateROI();
-    }
-
-    // 7. Interactive Capabilities Strip Logic
-    const stripTabs = document.querySelectorAll('.strip-tab');
-    const stripPreviews = document.querySelectorAll('.strip-preview');
-    stripTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = tab.getAttribute('data-tab');
-            stripTabs.forEach(t => t.classList.remove('active'));
-            stripPreviews.forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            const targetPreview = document.getElementById(`${target}-preview`);
-            if (targetPreview) targetPreview.classList.add('active');
-        });
-    });
-
-    // Strip Previews Charts
-    const stripDisplayCtx = document.getElementById('stripDisplayChart');
-    if (stripDisplayCtx) {
-        new Chart(stripDisplayCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Brand A', 'Brand B', 'Brand C', 'Others'],
-                datasets: [{ data: [45, 25, 20, 10], backgroundColor: primaryColor }]
-            },
-            options: { indexAxis: 'y', plugins: { legend: { display: false } } }
-        });
-    }
-    const stripContentCtx = document.getElementById('stripContentChart');
-    if (stripContentCtx) {
-        new Chart(stripContentCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Pos', 'Neu', 'Neg'],
-                datasets: [{ data: [68, 17, 15], backgroundColor: ['#10b981', '#9ca3af', '#ef4444'] }]
-            },
-            options: { maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right' } } }
-        });
-    }
-    const stripCreativeCtx = document.getElementById('stripCreativeChart');
-    if (stripCreativeCtx) {
-        new Chart(stripCreativeCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Awareness', 'Headline', 'Brand', 'CTA', 'Perf'],
-                datasets: [{ data: [88, 94, 91, 89, 92], backgroundColor: primaryColor }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
-        });
-    }
-
-    // 8. Module Previews Initialization
-    const displayPrevCtx = document.getElementById('displayPreviewChart');
-    if (displayPrevCtx) {
-        new Chart(displayPrevCtx, {
-            type: 'bar',
-            data: {
-                labels: ['P1', 'P2', 'P3', 'P4', 'P5'],
-                datasets: [{ data: [30, 25, 20, 15, 10], backgroundColor: primaryColor }]
-            },
-            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
-        });
-    }
-    const sentimentPrevCtx = document.getElementById('sentimentPreviewChart');
-    if (sentimentPrevCtx) {
-        new Chart(sentimentPrevCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Pos', 'Neu', 'Neg'],
-                datasets: [{ data: [68, 17, 15], backgroundColor: ['#10b981', '#9ca3af', '#ef4444'] }]
-            },
-            options: { plugins: { legend: { display: false } }, cutout: '60%' }
-        });
-    }
-    const creativePrevCtx = document.getElementById('creativePreviewChart');
-    if (creativePrevCtx) {
-        new Chart(creativePrevCtx, {
-            type: 'radar',
-            data: {
-                labels: ['AW', 'HL', 'BR', 'CTA', 'PF'],
-                datasets: [{ data: [85, 90, 75, 80, 95], backgroundColor: 'rgba(247, 148, 29, 0.2)', borderColor: primaryColor }]
-            },
-            options: { plugins: { legend: { display: false } }, scales: { r: { ticks: { display: false } } } }
-        });
-    }
-
-    // 9. Mouse Glow & Global Effects
+    // 7. Mouse Glow & Global Effects
     const mouseGlow = document.getElementById('mouse-glow');
     if (mouseGlow) {
         window.addEventListener('mousemove', (e) => {
@@ -350,23 +201,20 @@ document.addEventListener('DOMContentLoaded', () => {
             mouseGlow.style.top = e.clientY + 'px';
         });
     }
-});
 
-// Modal Logic (Global)
-function openModal() { 
-    const modal = document.getElementById('roiModal');
-    if (modal) modal.style.display = 'block'; 
-}
-function closeModal() { 
-    const modal = document.getElementById('roiModal');
-    if (modal) modal.style.display = 'none'; 
-}
-window.onclick = function(event) {
-    const modal = document.getElementById('roiModal');
-    if (event.target == modal) closeModal();
-}
-
-    // --- v2 Upgrade Logic ---
+    // Magnetic Buttons
+    const magneticBtns = document.querySelectorAll('.magnetic');
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+        });
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = `translate(0, 0)`;
+        });
+    });
 
     // 10. Scroll Progress Bar
     const scrollProgress = document.getElementById('scrollProgress');
@@ -409,66 +257,7 @@ window.onclick = function(event) {
                 icon.className = 'ph ph-list';
             }
         });
-
-        // Close menu on link click
-        mobileNav.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileNav.classList.remove('open');
-                menuToggle.querySelector('i').className = 'ph ph-list';
-            });
-        });
     }
-
-    // 12. Active Nav Highlighting (IntersectionObserver)
-    const navSections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const navObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const id = entry.target.getAttribute('id');
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + id) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    }, { threshold: 0.3 });
-    navSections.forEach(section => navObserver.observe(section));
-
-    // 13. Live Feed Random Stats
-    const statMentions = document.getElementById('stat-mentions');
-    const statSentiment = document.getElementById('stat-sentiment');
-    const statTrending = document.getElementById('stat-trending');
-    const trendingKeywords = ['#FMCG', '#AutoIndia', '#Fintech', '#EcomSales', '#BrandSafety', '#AdIntelligence'];
-
-    setInterval(() => {
-        if (statMentions) {
-            let val = parseInt(statMentions.innerText.replace(/,/g, ''));
-            val += Math.floor(Math.random() * 20 - 5);
-            statMentions.innerText = val.toLocaleString();
-        }
-        if (statSentiment) {
-            let val = parseInt(statSentiment.innerText);
-            val += Math.floor(Math.random() * 3 - 1);
-            statSentiment.innerText = Math.max(50, Math.min(95, val)) + '%';
-        }
-        if (Math.random() > 0.7 && statTrending) {
-            statTrending.innerText = trendingKeywords[Math.floor(Math.random() * trendingKeywords.length)];
-        }
-    }, 5000);
-
-    // 14. Smooth Scroll for all links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    });
 
     // Back to top click
     const btt = document.getElementById('backToTop');
@@ -477,3 +266,14 @@ window.onclick = function(event) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
     }
+});
+
+// Modal Logic
+function openModal() { 
+    const modal = document.getElementById('roiModal');
+    if (modal) modal.style.display = 'block'; 
+}
+function closeModal() { 
+    const modal = document.getElementById('roiModal');
+    if (modal) modal.style.display = 'none'; 
+}
