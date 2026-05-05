@@ -125,15 +125,28 @@
                 
                 <div class="hero-visual">
                     <div class="hero-widgets">
+                        <!-- Intelligence Feed Mockup -->
+                        <div class="hero-widget glass-panel feed-widget">
+                            <div class="widget-header">Real-time Pulse Feed</div>
+                            <div class="feed-mockup">
+                                <div class="feed-mock-item">
+                                    <span class="m-dot orange"></span>
+                                    <div class="m-text">Keyword <strong>"SUV India"</strong> up +14%</div>
+                                </div>
+                                <div class="feed-mock-item">
+                                    <span class="m-dot blue"></span>
+                                    <div class="m-text">New Creative detected: <strong>Maruti</strong></div>
+                                </div>
+                                <div class="feed-mock-item">
+                                    <span class="m-dot teal"></span>
+                                    <div class="m-text">Search SOV at <strong>34%</strong></div>
+                                </div>
+                            </div>
+                        </div>
                         <!-- Widget 1: SOV Donut -->
                         <div class="hero-widget glass-panel sov-widget">
                             <div class="widget-header">Share of Voice</div>
                             <canvas id="heroSovChart"></canvas>
-                        </div>
-                        <!-- Widget 2: Sentiment Trend -->
-                        <div class="hero-widget glass-panel sentiment-widget">
-                            <div class="widget-header">Sentiment Trend</div>
-                            <canvas id="heroSentimentChart"></canvas>
                         </div>
                         <!-- Widget 3: Creative Score -->
                         <div class="hero-widget glass-panel score-widget">
@@ -141,12 +154,6 @@
                             <div class="score-container">
                                 <div class="circular-progress" id="scoreCircle">
                                     <span class="score-value">0</span>
-                                </div>
-                                <div class="sub-scores">
-                                    <div class="sub-score"><span>Awareness</span> <strong>88</strong></div>
-                                    <div class="sub-score"><span>Headline</span> <strong>94</strong></div>
-                                    <div class="sub-score"><span>Brand</span> <strong>91</strong></div>
-                                    <div class="sub-score"><span>CTA</span> <strong>89</strong></div>
                                 </div>
                             </div>
                         </div>
@@ -188,39 +195,31 @@
             <div class="container">
                 <div class="section-header text-center">
                     <span class="badge">Core Flow</span>
-                    <h2>From setup to insight in minutes</h2>
+                    <h2>From Setup to Insight</h2>
                 </div>
-                <div class="flow-container">
-                    <div class="flow-line"></div>
-                    <div class="flow-steps">
-                        <div class="flow-step">
-                            <div class="step-num">1</div>
-                            <div class="step-content">
-                                <h3>Select Brand / Competitor</h3>
-                                <p>Choose the brands you want to monitor and benchmark against.</p>
-                            </div>
-                        </div>
-                        <div class="flow-step">
-                            <div class="step-num">2</div>
-                            <div class="step-content">
-                                <h3>Add Keywords / Categories</h3>
-                                <p>Define the search terms and market categories relevant to your business.</p>
-                            </div>
-                        </div>
-                        <div class="flow-step">
-                            <div class="step-num">3</div>
-                            <div class="step-content">
-                                <h3>Pulse Scout Crawls Platforms</h3>
-                                <p>Our engine continuously monitors search engines, marketplaces, and social channels.</p>
-                            </div>
-                        </div>
-                        <div class="flow-step">
-                            <div class="step-num">4</div>
-                            <div class="step-content">
-                                <h3>Get Insights Dashboard</h3>
-                                <p>Receive actionable data on rankings, SOV, and content performance instantly.</p>
-                            </div>
-                        </div>
+                <div class="flow-steps-grid">
+                    <div class="flow-card glass-panel">
+                        <div class="f-num">01</div>
+                        <h3>Identify</h3>
+                        <p>Select your brand and key competitors to track.</p>
+                    </div>
+                    <div class="flow-connector"><i class="ph ph-arrow-right"></i></div>
+                    <div class="flow-card glass-panel">
+                        <div class="f-num">02</div>
+                        <h3>Define</h3>
+                        <p>Add keywords and categories for monitoring.</p>
+                    </div>
+                    <div class="flow-connector"><i class="ph ph-arrow-right"></i></div>
+                    <div class="flow-card glass-panel">
+                        <div class="f-num">03</div>
+                        <h3>Analyze</h3>
+                        <p>Pulse Scout crawls and processes data in real-time.</p>
+                    </div>
+                    <div class="flow-connector"><i class="ph ph-arrow-right"></i></div>
+                    <div class="flow-card glass-panel">
+                        <div class="f-num">04</div>
+                        <h3>Win</h3>
+                        <p>Get actionable insights on your dashboard.</p>
                     </div>
                 </div>
             </div>

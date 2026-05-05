@@ -59,16 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const demoContents = document.querySelectorAll('.demo-content');
     demoTabs.forEach(tab => {
         tab.addEventListener('click', () => {
-            const target = tab.getAttribute('data-tab');
+            const target = tab.getAttribute('data-demo');
             demoTabs.forEach(t => t.classList.remove('active'));
             demoContents.forEach(c => c.classList.remove('active'));
             tab.classList.add('active');
             const targetContent = document.getElementById(`${target}-demo`);
             if (targetContent) targetContent.classList.add('active');
-            
-            // Re-init charts if needed
-            if (target === 'search') initSearchChart();
-            if (target === 'content') initContentChart();
         });
     });
 
@@ -259,12 +255,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Back to top click
-    const btt = document.getElementById('backToTop');
-    if (btt) {
-        btt.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+    // 12. Pulse Feed Simulation
+    const feedItems = [
+        { dot: 'orange', text: 'Keyword "SUV India" up +14%' },
+        { dot: 'blue', text: 'New Creative detected: Maruti' },
+        { dot: 'teal', text: 'Search SOV at 34%' },
+        { dot: 'orange', text: 'Zomato negative sentiment spike' },
+        { dot: 'blue', text: 'Flipkart CPC drop on "smartphones"' }
+    ];
+
+    const feedContainer = document.querySelector('.feed-mockup');
+    if (feedContainer) {
+        setInterval(() => {
+            const randomItem = feedItems[Math.floor(Math.random() * feedItems.length)];
+            const newItem = document.createElement('div');
+            newItem.className = 'feed-mock-item';
+            newItem.style.animation = 'slideInRight 0.5s ease forwards';
+            newItem.innerHTML = `
+                <span class="m-dot ${randomItem.dot}"></span>
+                <div class="m-text">${randomItem.text}</div>
+            `;
+            feedContainer.prepend(newItem);
+            if (feedContainer.children.length > 4) {
+                feedContainer.lastElementChild.remove();
+            }
+        }, 4000);
     }
 });
 
