@@ -3,316 +3,2329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pulse Scout | AI-Powered Market Intelligence</title>
-    <meta name="description" content="Track competitors, decode content, and win search. Real-time brand and keyword intelligence across search engines, marketplaces, and social platforms.">
+    <title>Pulse Scout — AI-powered Ad Intelligence & Brand Monitoring</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="index.css?v=3.0">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@400;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --ps-orange: #F7941D;
+            --ps-orange-dim: #F7941D22;
+            --ps-dark: #0B0C0F;
+            --ps-dark-card: #13141A;
+            --ps-mid: #1C1D24;
+            --ps-white: #FFFFFF;
+            --ps-off-white: #F7F7F5;
+            --ps-grey-text: #8A8B96;
+            --ps-border: #E8E8E3;
+            --ps-teal: #1DB07A;
+            --ps-red: #E24B4A;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--ps-dark);
+            background-color: var(--ps-white);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, .syne {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Utils */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .eyebrow {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--ps-orange);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 28px;
+            height: 48px;
+            border-radius: 999px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background-color: var(--ps-orange);
+            color: var(--ps-white);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #e08316;
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background-color: transparent;
+            border: 1px solid var(--ps-white);
+            color: var(--ps-white);
+        }
+
+        .btn-ghost:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-ghost-dark {
+            background-color: transparent;
+            border: 1px solid var(--ps-border);
+            color: var(--ps-dark);
+        }
+
+        .btn-ghost-dark:hover {
+            border-color: var(--ps-dark);
+        }
+
+        .text-grey { color: var(--ps-grey-text); }
+        .text-orange { color: var(--ps-orange); }
+        .text-white { color: var(--ps-white); }
+        .bg-dark { background-color: var(--ps-dark); color: var(--ps-white); }
+        .bg-off-white { background-color: var(--ps-off-white); }
+        
+        .section-padding { padding: 120px 0; }
+        
+        /* Animations */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        @keyframes pulse-subtle {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .hero-headline .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUpWord 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeUpWord {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            * { animation: none !important; transition: none !important; }
+            .reveal { opacity: 1; transform: none; }
+        }
+
+        /* Scroll Progress */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background-color: var(--ps-orange);
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s ease-out;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, backdrop-filter 0.3s ease;
+            animation: fadeInNav 0.3s ease forwards;
+        }
+
+        @keyframes fadeInNav {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        nav.scrolled {
+            background-color: rgba(11, 12, 15, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--ps-mid);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+        .logo .pulse { color: var(--ps-white); }
+        .logo .scout { color: var(--ps-orange); font-weight: 600; }
+        
+        nav:not(.scrolled) .logo .pulse { color: var(--ps-white); }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: var(--ps-white);
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .nav-links a:hover { opacity: 1; }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .nav-login {
+            color: var(--ps-white);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-btn {
+            height: 40px;
+            padding: 0 20px;
+            font-size: 14px;
+        }
+
+        .mobile-only { display: none; }
+        @media (max-width: 768px) {
+            .desktop-only { display: none; }
+            .mobile-only { display: block; color: var(--ps-white); background: none; border: none; cursor: pointer; }
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            padding-top: 160px;
+            padding-bottom: 80px;
+            background: var(--ps-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 400px;
+            background: radial-gradient(circle, var(--ps-orange) 0%, transparent 70%);
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(var(--ps-white) 1px, transparent 1px);
+            background-size: 32px 32px;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: var(--ps-dark-card);
+            border-top: 1px solid var(--ps-orange);
+            border-radius: 999px;
+            padding: 8px 16px;
+            margin-bottom: 40px;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: marquee 30s linear infinite;
+        }
+        
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            font-size: 13px;
+            color: var(--ps-grey-text);
+            margin-right: 40px;
+        }
+        
+        .ticker-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .dot-orange { background: var(--ps-orange); }
+        .dot-red { background: var(--ps-red); }
+        .dot-teal { background: var(--ps-teal); }
+
+        .hero h1 {
+            font-size: 72px;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            color: var(--ps-white);
+        }
+        
+        .hero h1 .underline-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero h1 .underline-svg {
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            stroke: var(--ps-orange);
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: var(--ps-grey-text);
+            max-width: 600px;
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.4s;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.6s;
+        }
+
+        .social-proof-micro {
+            font-size: 13px;
+            color: var(--ps-grey-text);
+            opacity: 0;
+            animation: fadeIn 0.8s ease forwards 0.8s;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Hero Dashboard Preview */
+        .hero-dashboard {
+            position: relative;
+            z-index: 2;
+            margin-top: 64px;
+            width: 100%;
+            max-width: 1000px;
+            background: var(--ps-dark-card);
+            border: 1px solid var(--ps-mid);
+            border-radius: 16px;
+            padding: 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+            box-shadow: 0 20px 40px rgba(247, 148, 29, 0.05);
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeUpWidget 1s ease forwards 1s;
+        }
+        
+        @keyframes fadeUpWidget {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .widget {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .widget-title {
+            font-size: 14px;
+            color: var(--ps-grey-text);
+            font-weight: 500;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--ps-orange);
+            border-radius: 50%;
+            margin-right: 8px;
+            box-shadow: 0 0 8px var(--ps-orange);
+            animation: pulse-dot 2s infinite;
+        }
+        
+        @keyframes pulse-dot {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.5); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .chart-container {
+            position: relative;
+            height: 180px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .donut-center-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: var(--ps-white);
+        }
+
+        .radial-score {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 8px solid var(--ps-mid);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .radial-progress {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 8px solid transparent;
+            border-top-color: var(--ps-orange);
+            border-right-color: var(--ps-orange);
+            transform: rotate(-45deg);
+        }
+        
+        .radial-value {
+            font-size: 36px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            color: var(--ps-white);
+        }
+        
+        .radial-subscores {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--ps-grey-text);
+        }
+        
+        .subscore {
+            display: flex;
+            justify-content: space-between;
+        }
+        .subscore-val { font-family: 'JetBrains Mono', monospace; color: var(--ps-white); }
+
+        /* Trust Bar */
+        .trust-bar {
+            border-top: 1px solid var(--ps-border);
+            border-bottom: 1px solid var(--ps-border);
+            padding: 32px 0;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background: var(--ps-white);
+        }
+        
+        .trust-label {
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--ps-grey-text);
+            white-space: nowrap;
+            margin-right: 48px;
+            flex-shrink: 0;
+            padding-left: 24px;
+        }
+        
+        .trust-marquee {
+            display: flex;
+            gap: 32px;
+            animation: marquee 40s linear infinite;
+        }
+        
+        .brand-pill {
+            padding: 8px 16px;
+            background: #F0F0F0;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #999;
+            font-size: 14px;
+            letter-spacing: -0.02em;
+        }
+
+        /* Section Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+        
+        .grid-2-start { align-items: start; }
+
+        h2.section-title {
+            font-size: 48px;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+        
+        .section-desc {
+            font-size: 18px;
+            color: var(--ps-grey-text);
+            margin-bottom: 40px;
+        }
+
+        /* Problem Section */
+        .problem-list { display: flex; flex-direction: column; gap: 20px; }
+        .problem-item {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            font-size: 16px;
+            color: var(--ps-dark);
+        }
+        .problem-icon { flex-shrink: 0; font-size: 20px; }
+        
+        .stat-cards-staggered {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .stat-card-dark {
+            background: var(--ps-mid);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            transform: translateX(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card-dark:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.2);
+        }
+        
+        .stat-card-dark:nth-child(even) { margin-left: 32px; }
+        
+        .stat-val {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 32px;
+            color: var(--ps-orange);
+            min-width: 80px;
+        }
+        .stat-label {
+            font-size: 15px;
+            color: var(--ps-white);
+            line-height: 1.4;
+        }
+
+        /* How it Works */
+        .flow-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            position: relative;
+            margin-top: 64px;
+            margin-bottom: 48px;
+        }
+        
+        .flow-line {
+            position: absolute;
+            top: 32px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            border-top: 2px dashed var(--ps-mid);
+            z-index: 1;
+        }
+        
+        .flow-line-progress {
+            position: absolute;
+            top: -2px;
+            left: 0;
+            height: 2px;
+            border-top: 2px dashed var(--ps-orange);
+            width: 0;
+            transition: width 1.5s ease;
+        }
+        
+        .flow-step {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--ps-dark-card);
+            border: 1px solid var(--ps-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            color: var(--ps-orange);
+        }
+        
+        .flow-step h3 {
+            font-size: 20px;
+            color: var(--ps-white);
+            margin-bottom: 12px;
+        }
+        
+        .flow-step p {
+            font-size: 15px;
+            color: var(--ps-grey-text);
+        }
+
+        .flow-ctas {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        /* Modules */
+        .tabs-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 48px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+        }
+        .tabs-nav::-webkit-scrollbar { display: none; }
+        
+        .tab-btn {
+            padding: 12px 24px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background: var(--ps-off-white);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--ps-grey-text);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .tab-btn.active {
+            background: var(--ps-white);
+            border: 1px solid var(--ps-border);
+            color: var(--ps-dark);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background: var(--ps-orange);
+            border-radius: 2px;
+        }
+        
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: grid; }
+        
+        .feature-list {
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        .feature-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--ps-orange);
+        }
+        
+        .module-preview {
+            background: var(--ps-off-white);
+            border: 1px solid var(--ps-border);
+            border-radius: 24px;
+            padding: 40px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Live SOV */
+        .live-sov-chart {
+            background: var(--ps-dark-card);
+            border: 1px solid var(--ps-mid);
+            border-radius: 24px;
+            padding: 40px;
+            margin-top: 48px;
+            position: relative;
+        }
+        
+        .live-timestamp {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--ps-orange);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .insight-chips {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            overflow: hidden;
+            height: 40px;
+        }
+        
+        .insight-chip {
+            background: var(--ps-dark-card);
+            border: 1px solid var(--ps-mid);
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 13px;
+            color: var(--ps-grey-text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            transition: opacity 0.5s;
+        }
+
+        /* Impact */
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .impact-card {
+            background: var(--ps-white);
+            border: 1px solid var(--ps-border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .impact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+        }
+        
+        .impact-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 56px;
+            color: var(--ps-orange);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        
+        .impact-label {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--ps-dark);
+        }
+        
+        .impact-desc {
+            font-size: 13px;
+            color: var(--ps-grey-text);
+        }
+
+        /* Comparison */
+        .comp-table-wrap {
+            overflow-x: auto;
+            margin-top: 48px;
+            border-radius: 16px;
+            border: 1px solid var(--ps-border);
+        }
+        
+        .comp-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            min-width: 800px;
+        }
+        
+        .comp-table th, .comp-table td {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--ps-border);
+        }
+        
+        .comp-table th {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            background: #F9F9F9;
+        }
+        
+        .comp-table th.ps-col {
+            background: var(--ps-orange);
+            color: var(--ps-white);
+        }
+        
+        .comp-table td { font-size: 15px; }
+        .comp-table td.ps-col { background: rgba(247, 148, 29, 0.03); }
+        .comp-table tr:last-child td { border-bottom: none; }
+        .comp-table tr:hover td:not(.ps-col) { background: #FAFAFA; }
+        
+        .check-icon { color: var(--ps-teal); }
+        .cross-icon { color: var(--ps-red); }
+        .ps-col .check-icon { color: var(--ps-orange); font-weight: bold; }
+        
+        .table-footnote {
+            font-size: 12px;
+            color: var(--ps-grey-text);
+            margin-top: 16px;
+            text-align: right;
+        }
+
+        /* Testimonials */
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 48px;
+        }
+        
+        .test-card {
+            background: var(--ps-dark-card);
+            border: 1px solid var(--ps-mid);
+            border-radius: 24px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
+        }
+        
+        .test-card:hover {
+            border-color: var(--ps-orange);
+            box-shadow: 0 10px 30px rgba(247, 148, 29, 0.05);
+            transform: translateY(-4px);
+        }
+        
+        .test-quote {
+            font-size: 16px;
+            color: var(--ps-white);
+            margin-bottom: 32px;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+        
+        .test-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--ps-white);
+            font-family: 'Syne', sans-serif;
+        }
+        
+        .avatar-ps { background: var(--ps-orange); }
+        .avatar-rm { background: var(--ps-teal); }
+        .avatar-ai { background: #8B5CF6; }
+        
+        .author-info h4 { font-size: 15px; color: var(--ps-white); margin-bottom: 2px; }
+        .author-info p { font-size: 13px; color: var(--ps-grey-text); }
+        .stars { color: var(--ps-orange); margin-bottom: 16px; font-size: 14px; }
+
+        /* Pricing */
+        .pricing-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+        
+        .toggle-label { font-size: 16px; font-weight: 500; }
+        .save-badge {
+            background: var(--ps-orange-dim);
+            color: var(--ps-orange);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            width: 56px;
+            height: 32px;
+            background: var(--ps-border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .toggle-switch.annual { background: var(--ps-orange); }
+        
+        .toggle-knob {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 24px;
+            height: 24px;
+            background: var(--ps-white);
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .toggle-switch.annual .toggle-knob { transform: translateX(24px); }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .pricing-card {
+            background: var(--ps-white);
+            border: 1px solid var(--ps-border);
+            border-radius: 24px;
+            padding: 40px 32px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .pricing-card.popular {
+            border: 2px solid var(--ps-orange);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            transform: scale(1.02);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--ps-orange);
+            color: var(--ps-white);
+            padding: 4px 16px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .plan-name { font-size: 24px; margin-bottom: 8px; }
+        .plan-price { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 700; margin-bottom: 8px; }
+        .plan-price span { font-size: 16px; font-weight: 400; color: var(--ps-grey-text); font-family: 'DM Sans', sans-serif; }
+        .plan-tag { font-size: 14px; color: var(--ps-grey-text); margin-bottom: 32px; }
+        
+        .plan-features { flex-grow: 1; margin-bottom: 32px; }
+        .plan-feature {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+        
+        .plan-feature svg { color: var(--ps-teal); flex-shrink: 0; margin-top: 2px; }
+        .pricing-card .btn { width: 100%; }
+
+        /* Integrations */
+        .int-marquee-wrap {
+            margin-top: 48px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .int-row { display: flex; gap: 16px; width: max-content; }
+        .int-row.left { animation: marquee 30s linear infinite; }
+        .int-row.right { animation: marquee 30s linear infinite reverse; }
+        
+        .int-pill {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            background: var(--ps-white);
+            border: 1px solid var(--ps-border);
+            border-radius: 999px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .int-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--ps-grey-text);
+            opacity: 0.2;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            position: relative;
+            text-align: center;
+            padding: 160px 0;
+            overflow: hidden;
+        }
+        
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--ps-orange) 0%, transparent 70%);
+            opacity: 0.08;
+            pointer-events: none;
+        }
+        
+        .final-cta h2 { font-size: 56px; margin-bottom: 24px; }
+        .final-cta p { font-size: 18px; color: var(--ps-grey-text); max-width: 600px; margin: 0 auto 40px; }
+        
+        .reassurance {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 40px;
+        }
+        
+        .re-chip {
+            padding: 8px 16px;
+            border: 1px solid var(--ps-mid);
+            border-radius: 999px;
+            background: var(--ps-dark-card);
+            font-size: 13px;
+            color: var(--ps-grey-text);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--ps-dark);
+            color: var(--ps-white);
+            padding: 80px 0 32px;
+            border-top: 1px solid var(--ps-mid);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 64px;
+            margin-bottom: 64px;
+        }
+        
+        .footer-col p { color: var(--ps-grey-text); font-size: 14px; margin-top: 16px; max-width: 280px; }
+        .footer-col h5 { font-size: 15px; margin-bottom: 24px; }
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-col a { color: var(--ps-grey-text); font-size: 14px; transition: color 0.2s; }
+        .footer-col a:hover { color: var(--ps-orange); }
+        
+        .footer-bottom {
+            border-top: 1px solid var(--ps-mid);
+            padding-top: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--ps-grey-text);
+        }
+        
+        .social-icons { display: flex; gap: 16px; }
+        .social-icons a { color: var(--ps-grey-text); transition: color 0.2s; }
+        .social-icons a:hover { color: var(--ps-orange); }
+
+        #back-to-top {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--ps-orange);
+            color: var(--ps-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 99;
+        }
+        
+        #back-to-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        @media (max-width: 992px) {
+            .hero h1 { font-size: 44px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .flow-container { grid-template-columns: 1fr; }
+            .flow-line { display: none; }
+            .impact-grid, .test-grid, .pricing-grid, .footer-grid { grid-template-columns: 1fr; }
+            .hero-dashboard { grid-template-columns: 1fr; }
+            .stat-card-dark:nth-child(even) { margin-left: 0; }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-inner">
+    <div id="scroll-progress"></div>
+
+    <nav id="navbar">
+        <div class="nav-container container">
             <a href="#" class="logo">
-                <i class="ph-fill ph-pulse"></i>
-                <span>Pulse Scout</span>
+                <span class="pulse">pulse</span> <span class="scout">scout</span>
             </a>
-            <div class="nav-links">
-                <a href="#features">Platform</a>
-                <a href="#how-it-works">How It Works</a>
-                <a href="#proof">Results</a>
-                <a href="#insights">Insights</a>
+            <div class="nav-links desktop-only">
+                <a href="#modules">Platform</a>
+                <a href="#modules">Modules</a>
+                <a href="#impact">Impact</a>
+                <a href="#pricing">Pricing</a>
             </div>
-            <div class="nav-actions">
-                <a href="#" class="nav-cta-secondary">Log In</a>
-                <a href="#footer-cta" class="nav-cta">Get Started</a>
+            <div class="nav-actions desktop-only">
+                <a href="#" class="nav-login">Log In</a>
+                <a href="#" class="btn btn-primary nav-btn">Get a Demo →</a>
             </div>
+            <button class="mobile-menu-btn mobile-only" aria-label="Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </button>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <section class="hero" id="hero">
-        <div class="hero-grid-lines"></div>
-        <div class="hero-inner">
-            <div class="hero-content">
-                <h1 class="hero-title">Track competitors.<br>Decode content.<br>Win search.</h1>
-                <p class="hero-subtitle">See what's winning across search engines, marketplaces, and social platforms — before your competitors do. Pulse Scout gives you real-time brand and keyword intelligence.</p>
-                <div class="hero-ctas">
-                    <a href="#footer-cta" class="btn-primary">Get Started</a>
-                    <a href="#features" class="btn-dark">Explore Platform</a>
+    <!-- SECTION 1: HERO -->
+    <section class="hero">
+        <div class="container hero-content">
+            
+            <div class="ticker-wrap">
+                <div class="ticker">
+                    <span class="ticker-item"><div class="ticker-dot dot-orange"></div>Maruti Suzuki gained +14% SOV on CarWale.com — 2 hrs ago</span>
+                    <span class="ticker-item"><div class="ticker-dot dot-red"></div>Zomato: Negative sentiment spike — 847 mentions in last hour</span>
+                    <span class="ticker-item"><div class="ticker-dot dot-orange"></div>HDFC Bank competitor launched display campaign on 9 publishers</span>
+                    <span class="ticker-item"><div class="ticker-dot dot-teal"></div>Flipkart creative score improved to 89 — top CTA clarity</span>
+                    <span class="ticker-item"><div class="ticker-dot dot-orange"></div>Airtel: Search impression share up 22% for 'broadband plans'</span>
+                    <span class="ticker-item"><div class="ticker-dot dot-red"></div>Tata Motors: Brand mention crisis detected — 3 forums flagged</span>
+                    <span class="ticker-item"><div class="ticker-dot dot-teal"></div>Myntra holds 34% SOV in Fashion — highest this week</span>
+                    <span class="ticker-item"><div class="ticker-dot dot-orange"></div>Asian Paints: 5 new competitor creatives captured</span>
                 </div>
-                <div class="hero-logos">
-                    <span class="hero-logos-label">Trusted by leading brands</span>
-                    <div class="logo-row">
-                        <span>Maruti Suzuki</span>
-                        <span>Eicher Motors</span>
-                        <span>IDFC First Bank</span>
-                        <span>Ashok Leyland</span>
-                        <span>LPU</span>
+            </div>
+
+            <h1 class="hero-headline">
+                <span class="word" style="animation-delay: 0.05s;">Know</span>
+                <span class="word" style="animation-delay: 0.1s;">what</span>
+                <span class="word" style="animation-delay: 0.15s;">your</span>
+                <span class="word underline-wrap" style="animation-delay: 0.2s;">
+                    competitors
+                    <svg class="underline-svg" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0,5 Q25,0 50,5 T100,5" />
+                    </svg>
+                </span>
+                <br>
+                <span class="word" style="animation-delay: 0.25s;">are</span>
+                <span class="word" style="animation-delay: 0.3s;">doing.</span>
+                <span class="word" style="animation-delay: 0.35s;">Before</span>
+                <span class="word" style="animation-delay: 0.4s;">they</span>
+                <span class="word" style="animation-delay: 0.45s;">win.</span>
+            </h1>
+
+            <p>Pulse Scout tracks display ads, search campaigns, brand sentiment, and creative performance — in real time — so you never get outmanoeuvred again.</p>
+
+            <div class="hero-ctas">
+                <a href="#" class="btn btn-primary">Start Tracking Free →</a>
+                <a href="#" class="btn btn-ghost">See a Live Demo</a>
+            </div>
+            
+            <div class="social-proof-micro">
+                Trusted by 200+ brands across FMCG, Automotive, Finance & E-commerce
+            </div>
+
+            <!-- Dashboard Preview -->
+            <div class="hero-dashboard">
+                <!-- Widget 1 -->
+                <div class="widget">
+                    <div class="widget-title"><div class="live-dot"></div> Share of Voice · Live</div>
+                    <div class="chart-container">
+                        <canvas id="hero-donut"></canvas>
+                        <div class="donut-center-label" id="donut-center-val">34%</div>
+                    </div>
+                </div>
+                
+                <!-- Widget 2 -->
+                <div class="widget">
+                    <div class="widget-title">Brand Sentiment · 14 days</div>
+                    <div class="chart-container">
+                        <canvas id="hero-line"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Widget 3 -->
+                <div class="widget">
+                    <div class="widget-title">Creative Score · Top Ad</div>
+                    <div class="radial-score">
+                        <div class="radial-progress" id="hero-radial"></div>
+                        <div class="radial-value counter" data-target="92">0</div>
+                    </div>
+                    <div class="radial-subscores">
+                        <div class="subscore"><span>Awareness</span><span class="subscore-val">88</span></div>
+                        <div class="subscore"><span>Headline</span><span class="subscore-val">94</span></div>
+                        <div class="subscore"><span>CTA</span><span class="subscore-val">89</span></div>
+                        <div class="subscore"><span>Brand</span><span class="subscore-val">91</span></div>
                     </div>
                 </div>
             </div>
-            <div class="hero-visual">
-                <div class="hero-globe" id="heroGlobe"></div>
-                <div class="typing-bar" id="typingBar">
-                    <i class="ph ph-magnifying-glass"></i>
-                    <span class="typing-text" id="typingText"></span>
-                    <span class="typing-cursor">|</span>
-                </div>
-            </div>
+
         </div>
     </section>
 
-    <!-- NARRATIVE BREAK -->
-    <section class="narrative" id="narrative">
-        <div class="grid-lines"></div>
-        <div class="narrative-inner">
-            <p class="narrative-text reveal-el">
-                Search is being disrupted. AI is reshaping how consumers discover brands. If your brand isn't showing up in the right results, across the right platforms, <strong>you're invisible</strong>.
-            </p>
-            <p class="narrative-text reveal-el" style="animation-delay: 0.2s;">
-                Pulse Scout automates competitive intelligence so you can stop guessing and start winning. Track every keyword, every campaign, every market shift — in real time.
-            </p>
-            <a href="#footer-cta" class="btn-primary" style="margin-top: 2rem;">Schedule a Demo</a>
+    <!-- SECTION 2: TRUST BAR -->
+    <section class="trust-bar reveal">
+        <div class="trust-label">Powering intelligence for leading brands</div>
+        <div class="trust-marquee">
+            <!-- Repeated for seamless loop -->
+            <div class="brand-pill">HDFC Bank</div>
+            <div class="brand-pill">Maruti Suzuki</div>
+            <div class="brand-pill">Flipkart</div>
+            <div class="brand-pill">Zomato</div>
+            <div class="brand-pill">Airtel</div>
+            <div class="brand-pill">Tata Motors</div>
+            <div class="brand-pill">Myntra</div>
+            <div class="brand-pill">Nykaa</div>
+            <div class="brand-pill">Swiggy</div>
+            <div class="brand-pill">BigBasket</div>
+            
+            <div class="brand-pill">HDFC Bank</div>
+            <div class="brand-pill">Maruti Suzuki</div>
+            <div class="brand-pill">Flipkart</div>
+            <div class="brand-pill">Zomato</div>
+            <div class="brand-pill">Airtel</div>
+            <div class="brand-pill">Tata Motors</div>
         </div>
     </section>
 
-    <!-- FEATURE CARDS -->
-    <section class="features" id="features">
-        <div class="features-inner">
-            <div class="section-label reveal-el">PLATFORM</div>
-            <h2 class="section-title reveal-el">Keyword tracking, content intelligence,<br>competitive analysis. One platform.</h2>
-
-            <div class="feature-grid">
-                <div class="feature-card reveal-el">
-                    <div class="fc-header">
-                        <div class="fc-label">KEYWORD INTELLIGENCE</div>
-                        <i class="ph ph-chart-line-up"></i>
+    <!-- SECTION 3: PROBLEM -->
+    <section class="bg-off-white section-padding">
+        <div class="container grid-2 grid-2-start reveal">
+            <div>
+                <span class="eyebrow">THE PROBLEM</span>
+                <h2 class="section-title">Brands are flying blind while competitors move fast</h2>
+                <p class="section-desc">Without unified intelligence, every campaign decision is a guess. You're reacting to last week's data while competitors are acting on this morning's signals.</p>
+                
+                <div class="problem-list">
+                    <div class="problem-item">
+                        <span class="problem-icon">⛔</span>
+                        <p>You don't know where competitors are running display ads right now</p>
                     </div>
-                    <h3 class="fc-title">Track rankings across every platform</h3>
-                    <p class="fc-desc">Monitor keyword positions on Google, Amazon, Flipkart, and social. Get real-time movement alerts and historical trends.</p>
-                    <div class="fc-visual">
-                        <div class="fc-metric">
-                            <span class="fc-metric-label">SUV India</span>
-                            <span class="fc-metric-change up">↑ #1</span>
-                        </div>
-                        <div class="fc-metric">
-                            <span class="fc-metric-label">Best EV 2025</span>
-                            <span class="fc-metric-change up">↑ #3</span>
-                        </div>
+                    <div class="problem-item">
+                        <span class="problem-icon">⛔</span>
+                        <p>Your creative team is guessing what will perform before it launches</p>
                     </div>
-                </div>
-
-                <div class="feature-card reveal-el">
-                    <div class="fc-header">
-                        <div class="fc-label">CONTENT REPOSITORY</div>
-                        <i class="ph ph-archive"></i>
+                    <div class="problem-item">
+                        <span class="problem-icon">⛔</span>
+                        <p>Brand sentiment crises catch you off guard, hours too late</p>
                     </div>
-                    <h3 class="fc-title">Every ad, article, and listing in one library</h3>
-                    <p class="fc-desc">Search any brand or keyword to see exactly what's being published. Filter by platform, content type, and date.</p>
-                    <div class="fc-visual">
-                        <div class="fc-chip">Articles</div>
-                        <div class="fc-chip">Display Ads</div>
-                        <div class="fc-chip">Listings</div>
-                        <div class="fc-chip">Videos</div>
-                    </div>
-                </div>
-
-                <div class="feature-card reveal-el">
-                    <div class="fc-header">
-                        <div class="fc-label">COMPETITOR ANALYSIS</div>
-                        <i class="ph ph-users-three"></i>
-                    </div>
-                    <h3 class="fc-title">Benchmark your brand against the market</h3>
-                    <p class="fc-desc">Compare share of search, visibility trends, and campaign activity side-by-side with any competitor.</p>
-                    <div class="fc-visual">
-                        <div class="fc-bars">
-                            <div class="fc-bar" style="--w: 85%"><span>Your Brand</span></div>
-                            <div class="fc-bar" style="--w: 60%"><span>Competitor A</span></div>
-                            <div class="fc-bar" style="--w: 45%"><span>Competitor B</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="feature-card reveal-el">
-                    <div class="fc-header">
-                        <div class="fc-label">TREND DETECTION</div>
-                        <i class="ph ph-trend-up"></i>
-                    </div>
-                    <h3 class="fc-title">Spot rising keywords before they go mainstream</h3>
-                    <p class="fc-desc">Identify market shifts, seasonal patterns, and emerging search demand before your competitors react.</p>
-                    <div class="fc-visual">
-                        <div class="fc-trend-line"></div>
-                        <span class="fc-trend-badge">+32% this week</span>
+                    <div class="problem-item">
+                        <span class="problem-icon">⛔</span>
+                        <p>Media budget leaks to low-impact publishers with no visibility</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- HOW IT WORKS -->
-    <section class="how-it-works" id="how-it-works">
-        <div class="steps-inner">
-            <div class="section-label reveal-el">HOW IT WORKS</div>
-            <h2 class="section-title reveal-el">See measurable intelligence growth.</h2>
-
-            <div class="steps-flow reveal-el">
-                <div class="step-line"></div>
-                <div class="step">
-                    <div class="step-marker"></div>
-                    <div class="step-label">GET STARTED</div>
-                    <p class="step-desc">Select your brands and competitors. Add the keywords and categories that matter to your business.</p>
+            
+            <div class="stat-cards-staggered">
+                <div class="stat-card-dark">
+                    <div class="stat-val">68%</div>
+                    <div class="stat-label">of brands can't track competitor ad spend in real time</div>
                 </div>
-                <div class="step">
-                    <div class="step-marker"></div>
-                    <div class="step-label">ANALYZE</div>
-                    <p class="step-desc">Pulse Scout crawls search engines, marketplaces, and social platforms continuously. No manual work.</p>
+                <div class="stat-card-dark">
+                    <div class="stat-val">3.2<br>days</div>
+                    <div class="stat-label">average delay between a brand crisis and first response</div>
                 </div>
-                <div class="step">
-                    <div class="step-marker"></div>
-                    <div class="step-label">WIN</div>
-                    <p class="step-desc">Get actionable insights on rankings, content gaps, and competitor moves — delivered to your dashboard.</p>
+                <div class="stat-card-dark">
+                    <div class="stat-val">₹1 in 4</div>
+                    <div class="stat-label">display ad rupees spent with zero visibility into performance</div>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- PROOF SECTION -->
-    <section class="proof" id="proof">
-        <div class="proof-inner">
-            <div class="section-label reveal-el">RESULTS</div>
-            <h2 class="section-title reveal-el">Real data. Real outcomes.<br>Every insight tied to impact.</h2>
-
-            <div class="proof-grid">
-                <div class="proof-card reveal-el">
-                    <div class="proof-card-header">
-                        <span class="proof-badge">Share of Voice</span>
-                    </div>
-                    <div class="proof-bars">
-                        <div class="proof-bar">
-                            <span class="pb-label">Quality</span>
-                            <div class="pb-track"><div class="pb-fill" style="--fill: 80%"></div></div>
-                            <span class="pb-val">80%</span>
-                        </div>
-                        <div class="proof-bar">
-                            <span class="pb-label">Relevance</span>
-                            <div class="pb-track"><div class="pb-fill" style="--fill: 70%"></div></div>
-                            <span class="pb-val">70%</span>
-                        </div>
-                        <div class="proof-bar">
-                            <span class="pb-label">Visibility</span>
-                            <div class="pb-track"><div class="pb-fill" style="--fill: 65%"></div></div>
-                            <span class="pb-val">65%</span>
-                        </div>
-                        <div class="proof-bar">
-                            <span class="pb-label">Authority</span>
-                            <div class="pb-track"><div class="pb-fill" style="--fill: 82%"></div></div>
-                            <span class="pb-val">82%</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="proof-card reveal-el">
-                    <div class="proof-card-header">
-                        <span class="proof-badge">Action Items</span>
-                    </div>
-                    <div class="proof-checklist">
-                        <div class="proof-check"><i class="ph-fill ph-check-circle"></i> Track missing keyword opportunities</div>
-                        <div class="proof-check"><i class="ph-fill ph-check-circle"></i> Address content gaps vs competitors</div>
-                        <div class="proof-check"><i class="ph-fill ph-check-circle"></i> Monitor new campaign launches</div>
-                        <div class="proof-check"><i class="ph-fill ph-check-circle"></i> Benchmark SOV weekly</div>
-                    </div>
-                </div>
-
-                <div class="proof-card reveal-el">
-                    <div class="proof-card-header">
-                        <span class="proof-badge">Live Metrics</span>
-                    </div>
-                    <div class="proof-metrics-table">
-                        <div class="pm-row pm-header">
-                            <span>Metric</span><span>Change</span>
-                        </div>
-                        <div class="pm-row">
-                            <span>Keyword Rankings</span><span class="pm-chip up">+14%</span>
-                        </div>
-                        <div class="pm-row">
-                            <span>Content Indexed</span><span class="pm-chip up">+56%</span>
-                        </div>
-                        <div class="pm-row">
-                            <span>Competitor Alerts</span><span class="pm-chip up">+89%</span>
-                        </div>
-                    </div>
-                    <p class="proof-footnote">All tracked, improved, and tied to real strategy lift.</p>
+                <div class="stat-card-dark">
+                    <div class="stat-val">5 tools</div>
+                    <div class="stat-label">average number of disconnected tools brands use to piece together intelligence</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- INSIGHTS / BLOG -->
-    <section class="insights" id="insights">
-        <div class="insights-inner">
-            <div class="section-label light reveal-el">INSIGHTS</div>
-            <h2 class="section-title light reveal-el">Learn how market leaders stay ahead — with intelligence designed to turn data into action.</h2>
+    <!-- SECTION 4: HOW IT WORKS -->
+    <section class="bg-dark section-padding">
+        <div class="container reveal">
+            <span class="eyebrow">HOW IT WORKS</span>
+            <h2 class="section-title text-white">From setup to insight in under 5 minutes</h2>
+            
+            <div class="flow-container">
+                <div class="flow-line"></div>
+                <div class="flow-line-progress" id="flow-progress"></div>
+                
+                <div class="flow-step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    </div>
+                    <h3>Define your intelligence scope</h3>
+                    <p>Set your brand, competitors, target keywords, publisher list, locations, and crawl frequency. Takes 5 minutes. No technical setup.</p>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <h3>Real-time crawling engine activates</h3>
+                    <p>Our distributed crawlers continuously scan publisher sites, Google/Bing search results, news, blogs, forums, and social platforms — every hour, every day.</p>
+                </div>
+                
+                <div class="flow-step">
+                    <div class="step-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h4l3-9 5 18 3-9h5"/></svg>
+                    </div>
+                    <h3>AI converts signals into decisions</h3>
+                    <p>Sentiment is classified, creatives are scored, SOV is calculated, keywords are clustered. You get a dashboard of actions — not just data.</p>
+                </div>
+            </div>
+            
+            <div class="flow-ctas">
+                <a href="#modules" class="text-orange" style="font-weight: 500;">See all modules ↓</a>
+                <a href="#" class="btn btn-primary">Get a demo →</a>
+            </div>
+        </div>
+    </section>
 
-            <div class="insights-grid">
-                <a href="#" class="insight-card reveal-el">
-                    <div class="ic-img" style="background: linear-gradient(135deg, #1a1a2e, #16213e);"></div>
-                    <h3 class="ic-title">How Top Brands Use Keyword Intelligence to Dominate Search in 2026</h3>
-                    <p class="ic-excerpt">The brands winning search aren't guessing. They're using real-time keyword intelligence to make every campaign decision backed by data.</p>
-                </a>
-                <a href="#" class="insight-card reveal-el">
-                    <div class="ic-img" style="background: linear-gradient(135deg, #0f3443, #34e89e);"></div>
-                    <h3 class="ic-title">Content Repository vs Manual Research: Why Automation Wins</h3>
-                    <p class="ic-excerpt">Manual competitor research takes days. Pulse Scout's content repository delivers the same insights in seconds — here's how.</p>
-                </a>
-                <a href="#" class="insight-card reveal-el">
-                    <div class="ic-img" style="background: linear-gradient(135deg, #2d1b69, #FF6B00);"></div>
-                    <h3 class="ic-title">Share of Voice: The Metric Every Brand Manager Should Track</h3>
-                    <p class="ic-excerpt">SOV predicts market share growth. Learn how to measure it across search, display, and social — and why most brands get it wrong.</p>
-                </a>
+    <!-- SECTION 5: MODULES -->
+    <section id="modules" class="section-padding">
+        <div class="container reveal">
+            <span class="eyebrow">PLATFORM MODULES</span>
+            <h2 class="section-title">One platform. Every intelligence signal.</h2>
+            <p class="section-desc">Replace 5 disconnected tools with one unified view across display, search, content, creatives, and social.</p>
+            
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="1">Display</button>
+                <button class="tab-btn" data-tab="2">Search</button>
+                <button class="tab-btn" data-tab="3">Content & Sentiment</button>
+                <button class="tab-btn" data-tab="4">Creative Scoring</button>
+                <button class="tab-btn" data-tab="5">Social Listening</button>
+            </div>
+            
+            <div class="tabs-container">
+                <!-- Tab 1 -->
+                <div class="tab-content active grid-2" id="tab-1">
+                    <div>
+                        <h3 class="syne" style="font-size: 28px; margin-bottom: 16px;">Display Intelligence</h3>
+                        <p class="text-grey" style="font-size: 16px;">Track banner ads across publisher websites in real time. See exactly where competitors are advertising, which creatives they're running, and how their share of voice stacks up against yours.</p>
+                        <div class="feature-list">
+                            <div class="feature-item"><div class="feature-dot"></div>Real-time website crawling</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Publisher-level SOV analytics</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Hourly ad trend tracking</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Location-based tracking</div>
+                        </div>
+                    </div>
+                    <div class="module-preview">
+                        <canvas id="tab-chart-1"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tab 2 -->
+                <div class="tab-content grid-2" id="tab-2">
+                    <div>
+                        <h3 class="syne" style="font-size: 28px; margin-bottom: 16px;">Search Intelligence</h3>
+                        <p class="text-grey" style="font-size: 16px;">Track paid and organic search positions for any keyword across regions and devices. Know your impression share, competitor bid strategy, and ranking gaps — updated every crawl.</p>
+                        <div class="feature-list">
+                            <div class="feature-item"><div class="feature-dot"></div>Keyword position tracking</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Paid vs organic bifurcation</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Impression share calculation</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Region + device simulation</div>
+                        </div>
+                    </div>
+                    <div class="module-preview">
+                        <div style="width: 100%; background: var(--ps-white); border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                                <tr style="border-bottom: 1px solid var(--ps-border);"><th style="padding-bottom: 12px; font-size: 13px; color: var(--ps-grey-text);">Keyword</th><th style="padding-bottom: 12px; font-size: 13px; color: var(--ps-grey-text);">Pos</th><th style="padding-bottom: 12px; font-size: 13px; color: var(--ps-grey-text);">Type</th><th style="padding-bottom: 12px; font-size: 13px; color: var(--ps-grey-text);">Trend</th></tr>
+                                <tr style="border-bottom: 1px solid var(--ps-border);"><td style="padding: 16px 0; font-weight: 500;">best suv india</td><td>1</td><td><span style="background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">PAID</span></td><td style="color: var(--ps-teal);">↑ 2</td></tr>
+                                <tr style="border-bottom: 1px solid var(--ps-border);"><td style="padding: 16px 0; font-weight: 500;">top electric cars</td><td>3</td><td><span style="background: #F3E5F5; color: #7B1FA2; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">ORG</span></td><td style="color: var(--ps-grey-text);">-</td></tr>
+                                <tr><td style="padding: 16px 0; font-weight: 500;">suv under 15 lakhs</td><td>5</td><td><span style="background: #E8F5E9; color: #2E7D32; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">PAID</span></td><td style="color: var(--ps-red);">↓ 1</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add empty tabs 3,4,5 to be populated by script for brevity -->
+                 <div class="tab-content grid-2" id="tab-3">
+                    <div>
+                        <h3 class="syne" style="font-size: 28px; margin-bottom: 16px;">Content & Sentiment</h3>
+                        <p class="text-grey" style="font-size: 16px;">Analyse how your brand and competitors are being talked about across blogs, news, and forums. AI classifies every mention as Positive, Neutral, or Negative — with context.</p>
+                        <div class="feature-list">
+                            <div class="feature-item"><div class="feature-dot"></div>Blog + news + forum crawling</div>
+                            <div class="feature-item"><div class="feature-dot"></div>AI-based sentiment classification</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Brand mention extraction</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Competitor sentiment comparison</div>
+                        </div>
+                    </div>
+                    <div class="module-preview">
+                        <canvas id="tab-chart-3"></canvas>
+                    </div>
+                </div>
+                
+                <div class="tab-content grid-2" id="tab-4">
+                    <div>
+                        <h3 class="syne" style="font-size: 28px; margin-bottom: 16px;">Creative Intelligence</h3>
+                        <p class="text-grey" style="font-size: 16px;">Upload any ad creative and get an AI-powered score across 9 dimensions — from headline clarity to CTA strength to mobile optimisation. Know what works before you spend.</p>
+                        <div class="feature-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div>
+                                <div style="font-size: 12px; color: var(--ps-grey-text); margin-bottom: 8px;">AWARENESS</div>
+                                <div class="feature-item" style="font-size: 13px;"><div class="feature-dot"></div>Imagery</div>
+                                <div class="feature-item" style="font-size: 13px;"><div class="feature-dot"></div>Headline</div>
+                                <div class="feature-item" style="font-size: 13px;"><div class="feature-dot"></div>Brand visibility</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 12px; color: var(--ps-grey-text); margin-bottom: 8px;">PERFORMANCE</div>
+                                <div class="feature-item" style="font-size: 13px;"><div class="feature-dot"></div>CTA strength</div>
+                                <div class="feature-item" style="font-size: 13px;"><div class="feature-dot"></div>Mobile optimisation</div>
+                                <div class="feature-item" style="font-size: 13px;"><div class="feature-dot"></div>USP clarity</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="module-preview">
+                        <canvas id="tab-chart-4"></canvas>
+                    </div>
+                </div>
+                
+                <div class="tab-content grid-2" id="tab-5">
+                    <div>
+                        <h3 class="syne" style="font-size: 28px; margin-bottom: 16px;">Social Listening</h3>
+                        <p class="text-grey" style="font-size: 16px;">Track brand and competitor conversations across social + web. Identify influencer mentions, regional sentiment shifts, and trending topics before they peak.</p>
+                        <div class="feature-list">
+                            <div class="feature-item"><div class="feature-dot"></div>Cross-platform mentions</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Influencer identification</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Regional sentiment breakdown</div>
+                            <div class="feature-item"><div class="feature-dot"></div>Competitor benchmarking</div>
+                        </div>
+                    </div>
+                    <div class="module-preview">
+                        <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
+                            <div style="background: var(--ps-dark); padding: 24px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="color: var(--ps-white);">
+                                    <div style="font-size: 24px; font-family: 'Syne', sans-serif; font-weight: 700;">12.4K</div>
+                                    <div style="font-size: 12px; color: var(--ps-grey-text);">Mentions</div>
+                                </div>
+                                <div style="color: var(--ps-orange);">
+                                    <div style="font-size: 24px; font-family: 'Syne', sans-serif; font-weight: 700;">68%</div>
+                                    <div style="font-size: 12px; color: var(--ps-grey-text);">Positive</div>
+                                </div>
+                            </div>
+                            <canvas id="tab-chart-5" style="max-height: 120px;"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 6: LIVE SOV -->
+    <section class="bg-dark section-padding text-white text-center" style="position: relative; overflow: hidden;">
+        <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 300px; background: radial-gradient(circle, var(--ps-orange) 0%, transparent 70%); opacity: 0.1; pointer-events: none;"></div>
+        
+        <div class="container reveal">
+            <span class="eyebrow" style="margin-bottom: 16px;">SEE IT IN ACTION</span>
+            <h2 class="section-title">Watch brands compete for share of voice — live</h2>
+            <p class="section-desc" style="margin: 0 auto 48px; max-width: 600px;">This is simulated Pulse Scout data. Real clients see this updated every hour.</p>
+            
+            <div class="live-sov-chart">
+                <div class="live-timestamp">Last updated: <span id="sov-timer">0</span>s ago</div>
+                <div style="height: 300px; width: 100%;">
+                    <canvas id="main-sov-chart"></canvas>
+                </div>
+                
+                <div class="insight-chips" id="insight-chips">
+                    <div class="insight-chip">🟠 Maruti gained +4.2% SOV in the last crawl cycle</div>
+                    <div class="insight-chip" style="display: none;">🔴 Hyundai dropped 2 positions for 'best SUV India' — organic</div>
+                    <div class="insight-chip" style="display: none;">🟢 Tata Motors running 6 new creatives across 12 publisher sites</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 48px;">
+                <a href="#" class="text-orange" style="font-weight: 600; font-size: 18px; display: inline-flex; align-items: center; gap: 8px;">Track your brand like this <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 7: IMPACT -->
+    <section id="impact" class="bg-off-white section-padding">
+        <div class="container reveal">
+            <span class="eyebrow">BUSINESS IMPACT</span>
+            <h2 class="section-title">The numbers brands see after switching to Pulse Scout</h2>
+            
+            <div class="impact-grid">
+                <div class="impact-card">
+                    <div class="impact-val"><span class="counter" data-target="25">0</span>%</div>
+                    <div class="impact-label">Media Efficiency Gain</div>
+                    <div class="impact-desc">On average, brands reallocate 15–25% of wasted display spend within the first 30 days</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-val"><span class="counter" data-target="60">0</span>%</div>
+                    <div class="impact-label">Faster Campaign Planning</div>
+                    <div class="impact-desc">Intelligence-driven briefs cut planning cycles from weeks to days</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-val"><span class="counter" data-target="25">0</span>%</div>
+                    <div class="impact-label">Better Campaign Performance</div>
+                    <div class="impact-desc">Real-time creative scoring improves CTR and conversion rates</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-val"><span class="counter" data-target="20">0</span>%</div>
+                    <div class="impact-label">Better Brand Recall</div>
+                    <div class="impact-desc">Consistent SOV monitoring leads to stronger brand presence</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-val"><span class="counter" data-target="12">0</span>%</div>
+                    <div class="impact-label">Incremental Sales Uplift</div>
+                    <div class="impact-desc">Competitive intelligence enables smarter budget timing and placement</div>
+                </div>
+                <div class="impact-card">
+                    <div class="impact-val"><span class="counter" data-target="30">0</span>%</div>
+                    <div class="impact-label">Better Targeting Accuracy</div>
+                    <div class="impact-desc">AI-powered keyword clustering and publisher analytics improve audience precision</div>
+                </div>
+            </div>
+            
+            <div style="font-size: 12px; color: var(--ps-grey-text); text-align: center;">Based on aggregated outcomes across Pulse Scout clients. Individual results vary.</div>
+        </div>
+    </section>
+
+    <!-- SECTION 8: COMPARISON -->
+    <section class="section-padding">
+        <div class="container reveal">
+            <span class="eyebrow">WHY PULSE SCOUT</span>
+            <h2 class="section-title">Everything your current tools aren't</h2>
+            
+            <div class="comp-table-wrap">
+                <table class="comp-table">
+                    <tr>
+                        <th>Feature</th>
+                        <th class="ps-col">Pulse Scout</th>
+                        <th>SEMrush</th>
+                        <th>SimilarWeb</th>
+                        <th>Brandwatch</th>
+                    </tr>
+                    <tr>
+                        <td>Real-time display ad tracking</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span style="color: #F59E0B;">✅ partial</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                    <tr>
+                        <td>Search SOV + impression share</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="check-icon">✅</span></td>
+                        <td><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                    <tr>
+                        <td>AI creative scoring (0–100)</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                    <tr>
+                        <td>Content & sentiment intelligence</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="check-icon">✅</span></td>
+                    </tr>
+                    <tr>
+                        <td>Social listening built-in</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="check-icon">✅</span></td>
+                    </tr>
+                    <tr>
+                        <td>Campaign management built-in</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                    <tr>
+                        <td>Indian publisher network</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span style="color: #F59E0B;">✅ partial</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                    <tr>
+                        <td>Hourly crawl frequency</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                    <tr>
+                        <td>Role-based user management</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="check-icon">✅</span></td>
+                        <td><span class="check-icon">✅</span></td>
+                        <td><span class="check-icon">✅</span></td>
+                    </tr>
+                    <tr>
+                        <td>PayU / INR billing</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                    <tr>
+                        <td>Unified cross-channel view</td>
+                        <td class="ps-col"><span class="check-icon">✅</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                        <td><span class="cross-icon">❌</span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="table-footnote">Comparison based on publicly available feature documentation, May 2026</div>
+        </div>
+    </section>
+
+    <!-- SECTION 9: TESTIMONIALS -->
+    <section class="bg-dark section-padding">
+        <div class="container reveal">
+            <span class="eyebrow">WHAT CLIENTS SAY</span>
+            <h2 class="section-title text-white">Marketers who stopped guessing</h2>
+            
+            <div class="test-grid">
+                <div class="test-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="test-quote">"Pulse Scout gave us visibility into competitor display spend we never had before. We reallocated 22% of our media budget in the first month — and saw results immediately."</p>
+                    <div class="test-author">
+                        <div class="avatar avatar-ps">PS</div>
+                        <div class="author-info">
+                            <h4>Priya Sharma</h4>
+                            <p>Head of Digital Marketing, Leading FMCG Brand</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="test-quote">"The creative scoring engine saved us 3 weeks of A/B testing. We knew which ad would outperform before it even went live. That's a genuine competitive edge."</p>
+                    <div class="test-author">
+                        <div class="avatar avatar-rm">RM</div>
+                        <div class="author-info">
+                            <h4>Rahul Mehta</h4>
+                            <p>Performance Marketing Lead, Automotive Brand</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="test-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="test-quote">"Having display, search, and sentiment in one dashboard changed everything about how our team plans campaigns. We're faster, sharper, and always one step ahead."</p>
+                    <div class="test-author">
+                        <div class="avatar avatar-ai">AI</div>
+                        <div class="author-info">
+                            <h4>Ananya Iyer</h4>
+                            <p>Chief Marketing Officer, E-commerce Platform</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 10: PRICING -->
+    <section id="pricing" class="bg-off-white section-padding">
+        <div class="container reveal">
+            <div style="text-align: center; margin-bottom: 48px;">
+                <span class="eyebrow">PRICING</span>
+                <h2 class="section-title">Simple plans for every scale of ambition</h2>
+                <p class="section-desc" style="max-width: 600px; margin: 0 auto;">All plans include real-time crawling, AI insights, and dedicated onboarding. No hidden fees.</p>
+            </div>
+            
+            <div class="pricing-toggle">
+                <span class="toggle-label">Monthly</span>
+                <div class="toggle-switch" id="pricing-toggle" onclick="this.classList.toggle('annual'); togglePricing();">
+                    <div class="toggle-knob"></div>
+                </div>
+                <span class="toggle-label">Annual <span class="save-badge">Save 20%</span></span>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- Starter -->
+                <div class="pricing-card">
+                    <h3 class="plan-name syne">Starter</h3>
+                    <div class="plan-price" id="price-starter">₹29,999<span>/mo</span></div>
+                    <div class="plan-tag">For brands getting started</div>
+                    <div class="plan-features">
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 3 active campaigns</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Display + Search modules</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Weekly PDF/Excel reports</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 1 user seat</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Email support</div>
+                    </div>
+                    <a href="#" class="btn btn-ghost-dark">Start Free Trial</a>
+                </div>
+                
+                <!-- Growth -->
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <h3 class="plan-name syne">Growth</h3>
+                    <div class="plan-price" id="price-growth">₹79,999<span>/mo</span></div>
+                    <div class="plan-tag">For active brands and agencies</div>
+                    <div class="plan-features">
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 15 active campaigns</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> All 5 modules</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Daily reports + real-time alerts</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> 5 user seats with role mgmt</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Priority support + AM</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Creative scoring (unlimited)</div>
+                    </div>
+                    <a href="#" class="btn btn-primary">Get a Demo →</a>
+                </div>
+                
+                <!-- Enterprise -->
+                <div class="pricing-card">
+                    <h3 class="plan-name syne">Enterprise</h3>
+                    <div class="plan-price">Custom</div>
+                    <div class="plan-tag">For large brands needing full control</div>
+                    <div class="plan-features">
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited campaigns</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Custom crawl frequency</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> API access for data export</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Custom integrations</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> White-label reporting option</div>
+                        <div class="plan-feature"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> SLA-backed uptime guarantee</div>
+                    </div>
+                    <a href="#" class="btn btn-ghost-dark">Contact Sales</a>
+                </div>
+            </div>
+            
+            <div style="font-size: 12px; color: var(--ps-grey-text); text-align: center; margin-top: 24px;">All prices in INR. GST applicable. Cancel anytime.</div>
+        </div>
+    </section>
+
+    <!-- SECTION 11: INTEGRATIONS -->
+    <section class="section-padding" style="overflow: hidden;">
+        <div class="container reveal" style="text-align: center;">
+            <span class="eyebrow">INTEGRATIONS</span>
+            <h2 class="section-title">Works with your existing stack</h2>
+        </div>
+        
+        <div class="int-marquee-wrap">
+            <div class="int-row left">
+                <!-- Repeated for loop -->
+                <div class="int-pill"><div class="int-icon"></div> Google Search</div>
+                <div class="int-pill"><div class="int-icon"></div> Google Display</div>
+                <div class="int-pill"><div class="int-icon"></div> Microsoft Bing</div>
+                <div class="int-pill"><div class="int-icon"></div> Meta</div>
+                <div class="int-pill"><div class="int-icon"></div> YouTube</div>
+                <div class="int-pill"><div class="int-icon"></div> CarWale</div>
+                <div class="int-pill"><div class="int-icon"></div> Team-BHP</div>
+                <div class="int-pill"><div class="int-icon"></div> MoneyControl</div>
+                <div class="int-pill"><div class="int-icon"></div> NDTV</div>
+                <div class="int-pill"><div class="int-icon"></div> Times of India</div>
+                <div class="int-pill"><div class="int-icon"></div> Hindustan Times</div>
+                
+                <div class="int-pill"><div class="int-icon"></div> Google Search</div>
+                <div class="int-pill"><div class="int-icon"></div> Google Display</div>
+                <div class="int-pill"><div class="int-icon"></div> Microsoft Bing</div>
+                <div class="int-pill"><div class="int-icon"></div> Meta</div>
+                <div class="int-pill"><div class="int-icon"></div> YouTube</div>
+            </div>
+            
+            <div class="int-row right" style="margin-left: -200px;">
+                <!-- Repeated for loop -->
+                <div class="int-pill"><div class="int-icon"></div> Excel Export</div>
+                <div class="int-pill"><div class="int-icon"></div> PDF Reports</div>
+                <div class="int-pill"><div class="int-icon"></div> PayU</div>
+                <div class="int-pill"><div class="int-icon"></div> Slack Alerts</div>
+                <div class="int-pill"><div class="int-icon"></div> Email Reports</div>
+                <div class="int-pill"><div class="int-icon"></div> REST API</div>
+                <div class="int-pill"><div class="int-icon"></div> Google Sheets</div>
+                <div class="int-pill"><div class="int-icon"></div> WhatsApp</div>
+                
+                <div class="int-pill"><div class="int-icon"></div> Excel Export</div>
+                <div class="int-pill"><div class="int-icon"></div> PDF Reports</div>
+                <div class="int-pill"><div class="int-icon"></div> PayU</div>
+                <div class="int-pill"><div class="int-icon"></div> Slack Alerts</div>
+                <div class="int-pill"><div class="int-icon"></div> Email Reports</div>
+                <div class="int-pill"><div class="int-icon"></div> REST API</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 32px; font-size: 15px;">
+            Don't see your platform? We integrate on request. <a href="#" class="text-orange" style="font-weight: 500;">Talk to us →</a>
+        </div>
+    </section>
+
+    <!-- SECTION 12: FINAL CTA -->
+    <section class="final-cta bg-dark text-white">
+        <div class="container reveal">
+            <h2>Stop guessing.<br><span class="text-orange">Start knowing.</span></h2>
+            <p>Join 200+ brands tracking their digital presence with Pulse Scout. Setup takes 5 minutes. Insights start immediately.</p>
+            
+            <div style="display: flex; gap: 16px; justify-content: center;">
+                <a href="#" class="btn btn-primary" style="height: 56px; padding: 0 40px; font-size: 16px;">Start Tracking Free →</a>
+                <a href="#" class="btn btn-ghost" style="height: 56px; padding: 0 40px; font-size: 16px;">Schedule a Demo</a>
+            </div>
+            
+            <div class="reassurance">
+                <div class="re-chip">✓ No credit card required</div>
+                <div class="re-chip">✓ Real data from day one</div>
+                <div class="re-chip">✓ Cancel anytime</div>
             </div>
         </div>
     </section>
 
     <!-- FOOTER -->
-    <footer id="footer-cta">
-        <div class="footer-cta-area">
-            <div class="footer-cta-inner">
-                <div class="footer-cta-left">
-                    <p class="footer-cta-label">Ready to win?</p>
-                    <h2 class="footer-cta-title">See what Pulse Scout<br>can do for your brand.</h2>
-                    <p class="footer-cta-sub">Book a personalized demo. We'll show you how real-time intelligence drives smarter marketing decisions.</p>
-                    <div class="footer-cta-buttons">
-                        <a href="#" class="btn-primary">Get a Demo</a>
-                        <a href="#" class="btn-outline-light">Talk to Sales</a>
-                    </div>
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="#" class="logo" style="color: var(--ps-white);">
+                        pulse <span class="scout" style="color: var(--ps-orange);">scout</span>
+                    </a>
+                    <p>AI-powered ad intelligence for brands that mean business.</p>
+                    <p style="margin-top: 32px; font-size: 13px;">© 2026 Adglobal360. All rights reserved.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Platform</h5>
+                    <ul>
+                        <li><a href="#">Display Intelligence</a></li>
+                        <li><a href="#">Search Intelligence</a></li>
+                        <li><a href="#">Content & Sentiment</a></li>
+                        <li><a href="#">Creative Scoring</a></li>
+                        <li><a href="#">Social Listening</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Refund Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Disclaimer</a></li>
+                    </ul>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <div class="footer-bottom-inner">
-                <div class="footer-links-row">
-                    <div class="footer-col">
-                        <a href="#features">Platform</a>
-                        <a href="#how-it-works">How It Works</a>
-                        <a href="#proof">Results</a>
-                        <a href="#insights">Insights</a>
-                    </div>
-                    <div class="footer-col">
-                        <a href="#">Privacy Policy</a>
-                        <a href="#">Terms & Conditions</a>
-                    </div>
-                </div>
-                <div class="footer-copyright">
-                    <span>&copy; 2026 Pulse Scout (Adglobal360). All rights reserved.</span>
+            
+            <div class="footer-bottom">
+                <div>Made with intelligence by Adglobal360</div>
+                <div class="social-icons">
+                    <a href="#" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                    <a href="#" aria-label="Twitter"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="main.js?v=3.0"></script>
+    <button id="back-to-top" aria-label="Back to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"></polyline></svg>
+    </button>
+
+    <script>
+        // Set Chart.js defaults
+        Chart.defaults.color = '#8A8B96';
+        Chart.defaults.font.family = "'DM Sans', sans-serif";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Navigation Scroll Effect & Progress Bar ---
+            const navbar = document.getElementById('navbar');
+            const progressBar = document.getElementById('scroll-progress');
+            const backToTopBtn = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', () => {
+                const scrollY = window.scrollY;
+                
+                // Navbar
+                if (scrollY > 60) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                // Progress Bar
+                const winHeight = window.innerHeight;
+                const docHeight = document.body.clientHeight;
+                const percent = (scrollY / (docHeight - winHeight)) * 100;
+                progressBar.style.width = percent + '%';
+                
+                // Back to Top Button
+                if (scrollY > 400) {
+                    backToTopBtn.classList.add('visible');
+                } else {
+                    backToTopBtn.classList.remove('visible');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // --- Scroll Reveal Animations & Count up ---
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const animateValue = (obj, start, end, duration) => {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    // easeOutQuart
+                    const easeOut = 1 - Math.pow(1 - progress, 4);
+                    obj.innerHTML = Math.floor(easeOut * (end - start) + start);
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        obj.innerHTML = end;
+                    }
+                };
+                window.requestAnimationFrame(step);
+            };
+
+            let flowAnimated = false;
+            let heroRadialAnimated = false;
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        
+                        // Handle Counters
+                        const counters = entry.target.querySelectorAll('.counter');
+                        counters.forEach(counter => {
+                            if (!counter.classList.contains('counted')) {
+                                const target = parseInt(counter.getAttribute('data-target'));
+                                animateValue(counter, 0, target, 2000);
+                                counter.classList.add('counted');
+                            }
+                        });
+                        
+                        // Handle flow line animation
+                        if (entry.target.querySelector('.flow-container') && !flowAnimated) {
+                            setTimeout(() => {
+                                document.getElementById('flow-progress').style.width = '100%';
+                                flowAnimated = true;
+                            }, 500);
+                        }
+                        
+                        // Handle Hero Radial Animation
+                        if (entry.target.querySelector('.hero-dashboard') && !heroRadialAnimated) {
+                            setTimeout(() => {
+                                document.getElementById('hero-radial').style.transform = 'rotate(300deg)';
+                                document.getElementById('hero-radial').style.transition = 'transform 2s cubic-bezier(0.16, 1, 0.3, 1)';
+                                heroRadialAnimated = true;
+                            }, 1000);
+                        }
+
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+            
+            // Hero section animations observer
+            observer.observe(document.querySelector('.hero-content'));
+
+            // --- Hero Charts ---
+            const ctxDonut = document.getElementById('hero-donut').getContext('2d');
+            const heroDonut = new Chart(ctxDonut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Brand A', 'Brand B', 'Brand C', 'Brand D', 'Others'],
+                    datasets: [{
+                        data: [34, 22, 18, 15, 11],
+                        backgroundColor: ['#F7941D', '#3B82F6', '#1DB07A', '#8B5CF6', '#8A8B96'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    animation: { animateScale: true, animateRotate: true, duration: 2000 }
+                }
+            });
+
+            // Rotate highlighted segment
+            let activeSegment = 0;
+            const values = [34, 22, 18, 15, 11];
+            setInterval(() => {
+                activeSegment = (activeSegment + 1) % 5;
+                document.getElementById('donut-center-val').innerText = values[activeSegment] + '%';
+            }, 2500);
+
+            const ctxLine = document.getElementById('hero-line').getContext('2d');
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: ['N12', 'N14', 'N16', 'N18', 'N20', 'N22', 'N24'],
+                    datasets: [
+                        { label: 'Positive', data: [58, 59, 61, 62, 65, 66, 68], borderColor: '#1DB07A', tension: 0.4, borderWidth: 2, pointRadius: 0 },
+                        { label: 'Neutral', data: [30, 28, 25, 24, 22, 21, 20], borderColor: '#8A8B96', tension: 0.4, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                        { label: 'Negative', data: [12, 13, 14, 14, 13, 13, 12], borderColor: '#E24B4A', tension: 0.4, borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false, color: '#1C1D24' }, ticks: { font: { size: 10 } } },
+                        y: { display: false, min: 0, max: 80 }
+                    },
+                    animation: { duration: 2000, delay: 1000 }
+                }
+            });
+
+            // --- Tabs Logic & Charts ---
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            // Init Tab 1 Chart
+            const ctxTab1 = document.getElementById('tab-chart-1').getContext('2d');
+            const tab1Chart = new Chart(ctxTab1, {
+                type: 'bar',
+                data: {
+                    labels: ['Times of India', 'MoneyControl', 'NDTV', 'CarWale', 'Team-BHP'],
+                    datasets: [
+                        { label: 'Your Brand', data: [45, 30, 25, 60, 40], backgroundColor: '#F7941D' },
+                        { label: 'Comp A', data: [30, 40, 35, 20, 30], backgroundColor: '#8A8B96' },
+                        { label: 'Comp B', data: [25, 30, 40, 20, 30], backgroundColor: '#E8E8E3' }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } },
+                    scales: {
+                        x: { stacked: true, display: false },
+                        y: { stacked: true, grid: { display: false } }
+                    },
+                    animation: { duration: 1000 }
+                }
+            });
+
+            // Subtle update animation for Tab 1 chart
+            setInterval(() => {
+                if(document.getElementById('tab-1').classList.contains('active')) {
+                    tab1Chart.data.datasets[0].data = tab1Chart.data.datasets[0].data.map(val => val + (Math.random() * 4 - 2));
+                    tab1Chart.update('none'); // Update without full animation
+                }
+            }, 3000);
+
+            // Tab 3 Chart
+            const ctxTab3 = document.getElementById('tab-chart-3').getContext('2d');
+            const tab3Chart = new Chart(ctxTab3, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Positive', 'Neutral', 'Negative'],
+                    datasets: [{ data: [68, 17, 15], backgroundColor: ['#1DB07A', '#8A8B96', '#E24B4A'], borderWidth: 0 }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } },
+                    animation: { duration: 1000 }
+                }
+            });
+
+            // Tab 4 Chart
+            const ctxTab4 = document.getElementById('tab-chart-4').getContext('2d');
+            const tab4Chart = new Chart(ctxTab4, {
+                type: 'radar',
+                data: {
+                    labels: ['Awareness', 'Headline', 'Brand', 'CTA', 'Performance'],
+                    datasets: [{
+                        label: 'Creative Score',
+                        data: [88, 94, 91, 89, 90],
+                        backgroundColor: 'rgba(247, 148, 29, 0.2)',
+                        borderColor: '#F7941D',
+                        pointBackgroundColor: '#F7941D',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#F7941D'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(0,0,0,0.1)' },
+                            grid: { color: 'rgba(0,0,0,0.1)' },
+                            pointLabels: { font: { family: "'DM Sans'", size: 12 } },
+                            ticks: { display: false, min: 0, max: 100 }
+                        }
+                    },
+                    animation: { duration: 1000 }
+                }
+            });
+
+            // Tab 5 Chart
+            const ctxTab5 = document.getElementById('tab-chart-5').getContext('2d');
+            const tab5Chart = new Chart(ctxTab5, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Mentions',
+                        data: [1200, 1900, 1500, 2200, 1800, 1400, 2400],
+                        borderColor: '#F7941D',
+                        backgroundColor: 'rgba(247, 148, 29, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false }, y: { display: false, min: 0 } },
+                    maintainAspectRatio: false,
+                    animation: { duration: 1000 }
+                }
+            });
+
+            // Tab switching logic
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                });
+            });
+
+            // --- Live SOV Main Chart ---
+            const ctxMainSov = document.getElementById('main-sov-chart').getContext('2d');
+            Chart.defaults.color = '#8A8B96'; // Ensure text colors are right for dark mode
+            
+            const mainSovChart = new Chart(ctxMainSov, {
+                type: 'bar',
+                data: {
+                    labels: ['Maruti Suzuki', 'Hyundai', 'Tata Motors', 'Kia', 'Honda', 'MG Motor'],
+                    datasets: [{
+                        label: 'SOV %',
+                        data: [34.2, 22.5, 18.1, 12.4, 8.3, 4.5],
+                        backgroundColor: [
+                            '#F7941D', // Highlight
+                            '#1C1D24', '#1C1D24', '#1C1D24', '#1C1D24', '#1C1D24' // Muted dark
+                        ],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: {
+                        x: { display: false, max: 50 },
+                        y: { grid: { display: false }, ticks: { color: '#FFFFFF', font: { size: 14, family: "'DM Sans'" } } }
+                    },
+                    maintainAspectRatio: false,
+                    animation: { duration: 800 }
+                }
+            });
+
+            // Live SOV Simulation
+            const sovTimer = document.getElementById('sov-timer');
+            let secondsSinceUpdate = 0;
+            
+            setInterval(() => {
+                secondsSinceUpdate++;
+                sovTimer.innerText = secondsSinceUpdate;
+                
+                if (secondsSinceUpdate >= 3) { // Update every 3s
+                    secondsSinceUpdate = 0;
+                    
+                    // Fluctuate data
+                    let newData = mainSovChart.data.datasets[0].data.map(val => {
+                        let change = (Math.random() * 6) - 3; // -3 to +3
+                        let newVal = Math.max(0, val + change);
+                        return parseFloat(newVal.toFixed(1));
+                    });
+                    
+                    mainSovChart.data.datasets[0].data = newData;
+                    mainSovChart.update();
+                }
+            }, 1000);
+            
+            // Insight chips rotation
+            const insightChips = document.querySelectorAll('.insight-chip');
+            let currentChip = 0;
+            setInterval(() => {
+                insightChips[currentChip].style.display = 'none';
+                currentChip = (currentChip + 1) % insightChips.length;
+                insightChips[currentChip].style.display = 'flex';
+                // Reset animation
+                insightChips[currentChip].style.opacity = '0';
+                setTimeout(() => insightChips[currentChip].style.opacity = '1', 50);
+            }, 4000);
+        });
+
+        // --- Pricing Toggle ---
+        function togglePricing() {
+            const isAnnual = document.getElementById('pricing-toggle').classList.contains('annual');
+            const priceStarter = document.getElementById('price-starter');
+            const priceGrowth = document.getElementById('price-growth');
+            
+            if (isAnnual) {
+                priceStarter.innerHTML = '₹23,999<span>/mo</span>';
+                priceGrowth.innerHTML = '₹63,999<span>/mo</span>';
+            } else {
+                priceStarter.innerHTML = '₹29,999<span>/mo</span>';
+                priceGrowth.innerHTML = '₹79,999<span>/mo</span>';
+            }
+        }
+    </script>
 </body>
 </html>
